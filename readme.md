@@ -15,6 +15,7 @@ to *heapify*, to *offer* and to *poll*.
 
 Here are two applications: keap-based `PriorityQueue` as a replacement of `java.util.PriorityQueue` and `Keapsort`
 sorting algorithm. Both might be useful in two cases:
+
 1. Stability is required.
 1. Comparing elements is rather heavyweight operation (e.g., it requires a database access).
 
