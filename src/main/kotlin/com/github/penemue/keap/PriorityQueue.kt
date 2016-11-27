@@ -42,6 +42,7 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
 
     /**
      * Retrieves and removes the least element if any without [compaction][compactIfNecessary] of the queue.
+     * Is used in [keapSort].
      */
     fun pollRaw(): T? {
         if (count == 0) {
@@ -69,6 +70,17 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
     }
 
     override val size: Int get() = count
+
+    override fun remove(element: T): Boolean {
+        val i = indexOf(element)
+        if (i < 0) return false
+        removeAt(i)
+        return true
+    }
+
+    override fun contains(element: T): Boolean {
+        return indexOf(element) >= 0
+    }
 
     override fun iterator(): MutableIterator<T> {
         return object : MutableIterator<T> {
@@ -103,6 +115,10 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
                     if (expectedModCount != modCount) throw ConcurrentModificationException() else {
                     }
         }
+    }
+
+    private fun indexOf(element: T): Int {
+        return queue.indexOfFirst { it != null && it == element }
     }
 
     private fun heapify() {
