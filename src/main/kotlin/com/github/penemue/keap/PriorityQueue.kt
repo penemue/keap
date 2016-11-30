@@ -19,7 +19,7 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
 
     constructor(c: Collection<T>, comparator: Comparator<in T>? = null) : this(c.size, comparator) {
         count = c.size
-        c.forEach { queue[nextFree++] = it }
+        c.forEach { queue[nextFree++] = it ?: throw NullPointerException() }
         heapify()
     }
 
@@ -29,6 +29,8 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
         queue copyFrom c.queue
         heap copyFrom c.heap
     }
+
+    fun comparator() = cmp
 
     override fun peek(): T? = if (count == 0) null else queue[heap[0]]
 
@@ -52,6 +54,7 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
     }
 
     override fun offer(e: T): Boolean {
+        val element = e ?: throw NullPointerException()
         val i = nextFree
         if (i == queue.size) {
             val oldQueue = queue
@@ -61,7 +64,7 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
             nextFree = j
             heapify()
         }
-        queue[nextFree] = e
+        queue[nextFree] = element
         siftUp(nextFree)
         ++nextFree
         ++count
@@ -86,7 +89,8 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
         return object : MutableIterator<T> {
 
             var expectedModCount = modCount
-            var cursor = advance(0)
+            var cursor = -1
+            var hasNextValid = false
 
             override fun remove() {
                 assertConcurrentUse()
@@ -95,20 +99,23 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
             }
 
             override fun next(): T {
-                assertConcurrentUse()
+                hasNext()
                 val result = queue[cursor] ?: throw NullPointerException()
-                cursor = advance(cursor + 1)
+                hasNextValid = false
                 return result
             }
 
-            override fun hasNext() = cursor < queue.size
-
-            private fun advance(i: Int): Int {
-                var j = i
-                while (j < queue.size && queue[j] === null) {
-                    ++j
+            override fun hasNext(): Boolean {
+                assertConcurrentUse()
+                if (!hasNextValid) {
+                    hasNextValid = true
+                    var i = cursor + 1
+                    while (i < queue.size && queue[i] === null) {
+                        ++i
+                    }
+                    cursor = i
                 }
-                return j
+                return cursor < queue.size
             }
 
             private fun assertConcurrentUse() =
@@ -160,7 +167,7 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
     }
 
     private fun compactIfNecessary() {
-        if (count < queue.size / 3) {
+        if (count < queue.size / 3 && count > 0) {
             val oldQueue = queue
             allocHeap(count)
             var j = 0
@@ -205,8 +212,8 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
         if (i2 < 0) {
             return i1
         }
-        if (i1 >= i2) {
-            throw IllegalArgumentException()
+        if (i1 == i2) {
+            return i1
         }
         val value1 = queue[i1]
         val value2 = queue[i2]
@@ -232,7 +239,7 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
 
         private val Int.toCapacity: Int
             get() {
-                if (this < 0) {
+                if (this < 1) {
                     throw IllegalArgumentException()
                 }
                 // capacity if always a power of 2
