@@ -6,7 +6,7 @@ fun <T> Collection<T>.keapify(comparator: Comparator<in T>? = null) = PriorityQu
 
 fun <T> PriorityQueue<T>.copyOf() = PriorityQueue(this)
 
-open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : AbstractQueue<T>() {
+open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY, cmp: Comparator<in T>? = null) : AbstractQueue<T>() {
 
     private var count = 0
     private var nextFree = 0
@@ -97,7 +97,7 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
             override fun hasNext(): Boolean {
                 assertConcurrentUse()
                 var i = cursor
-                while (next === null) {
+                while (next == null) {
                     if (++i == queue.size) break
                     next = queue[i]
                 }
@@ -196,10 +196,10 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
         }
         val value1 = queue[i1]
         val value2 = queue[i2]
-        if (value1 === null && value2 === null) {
+        if (value1 == null && value2 == null) {
             return -1
         }
-        return if (value1 === null) i2 else if (value2 === null) i1 else if (cmp.compare(value2, value1) > 0) i1 else i2
+        return if (value1 == null) i2 else if (value2 == null) i1 else if (cmp.compare(value2, value1) > 0) i1 else i2
     }
 
     private companion object KeapMiscellaneous {

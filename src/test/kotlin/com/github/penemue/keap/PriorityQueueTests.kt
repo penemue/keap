@@ -27,6 +27,14 @@ class PriorityQueueTests {
     }
 
     /**
+     * A new queue created by default constructor
+     */
+    @Test
+    fun testConstructor0() {
+        assertEquals(0, PriorityQueue<Int>().size)
+    }
+
+    /**
      * A new queue has unbounded capacity
      */
     @Test
