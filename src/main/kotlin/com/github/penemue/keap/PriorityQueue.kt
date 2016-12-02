@@ -32,26 +32,17 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
 
     fun comparator() = cmp
 
-    override fun peek(): T? = if (count == 0) null else queue[heap[0]]
+    override fun peek(): T? = if (isEmpty()) null else queue[heap[0]]
 
     override fun poll(): T? {
-        val result = pollRaw()
-        if (result != null) {
-            compactIfNecessary()
-        }
-        return result
+        return pollRaw()?.apply { compactIfNecessary() }
     }
 
     /**
      * Retrieves and removes the least element if any without [compaction][compactIfNecessary] of the queue.
      * Is used in [keapSort].
      */
-    fun pollRaw(): T? {
-        if (count == 0) {
-            return null
-        }
-        return removeAt(heap[0])
-    }
+    fun pollRaw(): T? = if (isEmpty()) null else removeAt(heap[0])
 
     override fun offer(e: T): Boolean {
         val element = e ?: throw NullPointerException()
@@ -60,7 +51,7 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
             val oldQueue = queue
             allocHeap(i + 1)
             var j = 0
-            oldQueue.forEach { if (it != null) queue[j++] = it }
+            oldQueue.forEach { it?.apply { queue[j++] = it } }
             nextFree = j
             heapify()
         }
@@ -74,6 +65,8 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
 
     override val size: Int get() = count
 
+    override fun isEmpty() = count == 0
+
     override fun remove(element: T): Boolean {
         val i = indexOf(element)
         if (i < 0) return false
@@ -81,9 +74,7 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
         return true
     }
 
-    override fun contains(element: T): Boolean {
-        return indexOf(element) >= 0
-    }
+    override fun contains(element: T) = indexOf(element) >= 0
 
     override fun iterator(): MutableIterator<T> {
         return object : MutableIterator<T> {
@@ -124,9 +115,7 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
         }
     }
 
-    private fun indexOf(element: T): Int {
-        return queue.indexOfFirst { it != null && it == element }
-    }
+    private fun indexOf(element: T) = queue.indexOfFirst { it != null && it == element }
 
     private fun heapify() {
         var i = heap.size
@@ -171,12 +160,7 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
             val oldQueue = queue
             allocHeap(count)
             var j = 0
-            for (k in 0 until nextFree) {
-                val e = oldQueue[k]
-                if (e != null) {
-                    queue[j++] = e
-                }
-            }
+            repeat(nextFree, { oldQueue[it]?.apply { queue[j++] = this } })
             nextFree = j
             heapify()
         }
@@ -184,13 +168,12 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
 
     private fun removeAt(i: Int): T? {
         val result = queue[i]
-        if (result != null) {
+        return result?.apply {
             queue[i] = null
             siftUpToRoot(i)
             --count
             ++modCount
         }
-        return result
     }
 
     @Suppress("UNCHECKED_CAST")
