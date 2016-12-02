@@ -80,8 +80,8 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
         return object : MutableIterator<T> {
 
             var expectedModCount = modCount
+            var next: T? = null
             var cursor = -1
-            var hasNextValid = false
 
             override fun remove() {
                 assertConcurrentUse()
@@ -91,22 +91,18 @@ open class PriorityQueue<T>(capacity: Int = 0, cmp: Comparator<in T>? = null) : 
 
             override fun next(): T {
                 hasNext()
-                val result = queue[cursor] ?: throw NullPointerException()
-                hasNextValid = false
-                return result
+                return next?.apply { next = null } ?: throw NullPointerException()
             }
 
             override fun hasNext(): Boolean {
                 assertConcurrentUse()
-                if (!hasNextValid) {
-                    hasNextValid = true
-                    var i = cursor + 1
-                    while (i < queue.size && queue[i] === null) {
-                        ++i
-                    }
-                    cursor = i
+                var i = cursor
+                while (next === null) {
+                    if (++i == queue.size) break
+                    next = queue[i]
                 }
-                return cursor < queue.size
+                cursor = i
+                return next != null
             }
 
             private fun assertConcurrentUse() =
