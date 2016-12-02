@@ -185,21 +185,20 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY, cmp: Comparator<in T>?
     private fun queueParent(child: Int) = (child + heap.size).parent
 
     private fun min(i1: Int, i2: Int): Int {
-        if (i1 < 0) {
-            return i2
-        }
-        if (i2 < 0) {
-            return i1
-        }
-        if (i1 == i2) {
-            return i1
-        }
+        if (i1 < 0) return i2
+        if (i2 < 0) return i1
+        if (i1 == i2) return i1
+
         val value1 = queue[i1]
         val value2 = queue[i2]
-        if (value1 == null && value2 == null) {
-            return -1
-        }
-        return if (value1 == null) i2 else if (value2 == null) i1 else if (cmp.compare(value2, value1) > 0) i1 else i2
+        if (value1 == null && value2 == null) return -1
+        if (value1 == null) return i2
+        if (value2 == null) return i1
+
+        val compare = cmp.compare(value1, value2)
+        if (compare == 0) return if (i1 < i2) i1 else i2
+        if (compare < 0) return i1
+        return i2
     }
 
     private companion object KeapMiscellaneous {
