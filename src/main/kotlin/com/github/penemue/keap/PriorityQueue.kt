@@ -67,6 +67,8 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY, cmp: Comparator<in T>?
 
     override fun isEmpty() = count == 0
 
+    val capacity: Int get() = queue.size
+
     override fun remove(element: T): Boolean {
         val i = indexOf(element)
         if (i < 0) return false
@@ -201,9 +203,9 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY, cmp: Comparator<in T>?
         return i2
     }
 
-    private companion object KeapMiscellaneous {
+    internal companion object KeapMiscellaneous {
 
-        private const val MIN_CAPACITY = 4
+        const val MIN_CAPACITY = 4
         private val powersOf2: IntArray
 
         init {
@@ -222,10 +224,8 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY, cmp: Comparator<in T>?
                 }
                 // capacity if always a power of 2
                 val i = Arrays.binarySearch(powersOf2, this)
-                if (i < 0) {
-                    return powersOf2[-i - 1]
-                }
-                return Math.max(powersOf2[i], MIN_CAPACITY)
+                val result = if (i < 0) powersOf2[-i - 1] else powersOf2[i]
+                return if (result < MIN_CAPACITY) MIN_CAPACITY else result
             }
 
         private val Int.leftChild: Int get() = this * 2 + 1

@@ -1,10 +1,19 @@
 package com.github.penemue.keap
 
+import com.github.penemue.keap.PriorityQueue.KeapMiscellaneous.MIN_CAPACITY
 import org.junit.Assert
 import org.junit.Test
 import java.util.*
 
 class PriorityQueueAuxTests {
+
+    @Test
+    fun minCapacity() {
+        Assert.assertEquals(MIN_CAPACITY, PriorityQueue<Int>().capacity)
+        repeat(MIN_CAPACITY - 1, {
+            Assert.assertEquals(MIN_CAPACITY, PriorityQueue<Int>(it + 1).capacity)
+        })
+    }
 
     @Test
     fun stability() {
