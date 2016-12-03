@@ -211,10 +211,10 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY, cmp: Comparator<in T>?
         init {
             powersOf2 = IntArray(31)
             var powerOf2 = 1
-            for (i in powersOf2.indices) {
-                powersOf2[i] = powerOf2
+            repeat(powersOf2.size, {
+                powersOf2[it] = powerOf2
                 powerOf2 *= 2
-            }
+            })
         }
 
         private val Int.toCapacity: Int

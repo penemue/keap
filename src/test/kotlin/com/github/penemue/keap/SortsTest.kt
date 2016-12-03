@@ -1,23 +1,20 @@
 package com.github.penemue.keap
 
+import com.github.penemue.keap.RandomStrings.randomStringListOfSize
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.*
 
 inline fun <reified T> Collection<T>.heapSort(cmp: Comparator<in T>? = null): Array<T> {
     val heap = JavaPriorityQueue(cmp, this)
-    val result = arrayOfNulls<T>(heap.size)
-    for (i in result.indices) {
-        result[i] = heap.poll()
-    }
+    val result = arrayOfNulls<T>(size)
+    repeat(size, { result[it] = heap.poll() })
     @Suppress("UNCHECKED_CAST")
     return result as Array<T>
 }
 
 inline fun <reified T> Collection<T>.jvmSort(cmp: Comparator<in T>): Array<T> {
-    val sorted = this.toTypedArray()
-    Arrays.sort(sorted, cmp)
-    return sorted
+    return toTypedArray().apply { Arrays.sort(this, cmp) }
 }
 
 class SortsTest {
@@ -56,22 +53,7 @@ class SortsTest {
     private fun testSort(sortName: String, inputSize: Int, sort: (Collection<String>, Comparator<String>) -> Array<String>) {
         val cmp = CountingComparator<String>(Comparator(String::compareTo))
         val sorted = sort(randomStringListOfSize(inputSize), cmp)
-        for (i in 1 until sorted.size) {
-            assertTrue(sorted[i - 1] <= sorted[i])
-        }
+        repeat(inputSize - 1, { assertTrue(sorted[it] <= sorted[it + 1]) })
         println("$sortName: input size = $inputSize, number of comparisons = ${cmp.count}")
-    }
-
-    private companion object RandomStrings {
-
-        private val r = Random()
-
-        fun randomStringListOfSize(size: Int): List<String> {
-            val result = mutableListOf<String>()
-            for (i in 0 until size) {
-                result.add(Math.abs(r.nextLong()).toString())
-            }
-            return result
-        }
     }
 }
