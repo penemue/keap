@@ -84,7 +84,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY, cmp: Comparator<in T>?
             var cursor = -1
 
             override fun remove() {
-                assertConcurrentUse()
+                checkUnmodified()
                 removeAt(cursor)
                 expectedModCount = modCount
             }
@@ -95,7 +95,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY, cmp: Comparator<in T>?
             }
 
             override fun hasNext(): Boolean {
-                assertConcurrentUse()
+                checkUnmodified()
                 var i = cursor
                 while (next == null) {
                     if (++i == queue.size) break
@@ -105,7 +105,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY, cmp: Comparator<in T>?
                 return next != null
             }
 
-            private fun assertConcurrentUse() =
+            private fun checkUnmodified() =
                     if (expectedModCount != modCount) throw ConcurrentModificationException() else {
                     }
         }
