@@ -37,36 +37,49 @@ class PriorityQueueAuxTests {
         val q = PriorityQueue<StableComparable>()
         val rnd = Random()
         repeat(100000, { q.offer(StableComparable(rnd.nextInt(100))) })
+        testStability(100000, q)
+    }
 
-        assertEquals(100000, q.size)
+    @Test
+    fun stabilityOfKeapified() {
+        val rnd = Random()
+        val rndList = ArrayList<StableComparable>()
+        repeat(100000, { rndList.add(StableComparable(rnd.nextInt(100))) })
+        testStability(100000, rndList.keapify())
+    }
 
-        var prev = q.poll()
-        var current = q.poll()
-        while (current != null) {
-            if (current.compareTo(prev ?: throw NullPointerException()) == 0) {
-                assertTrue(prev.index < current.index)
+    companion object {
+
+        private class StableComparable(var value: Int) : Comparable<StableComparable> {
+
+            val index = counter++
+
+            override fun compareTo(other: StableComparable): Int {
+                return other.value.compareTo(value)
             }
-            prev = current
-            current = q.poll()
-        }
-    }
 
-    private fun testKeapify(input: List<String>) {
-        val cmp = CountingComparator<String>(Comparator(String::compareTo))
-        input.keapify(cmp)
-        assertEquals(input.size - 1, cmp.count)
-    }
-
-    private class StableComparable(var value: Int) : Comparable<StableComparable> {
-
-        val index = counter++
-
-        override fun compareTo(other: StableComparable): Int {
-            return other.value.compareTo(value)
+            companion object {
+                var counter = 0
+            }
         }
 
-        companion object {
-            var counter = 0
+        private fun testKeapify(input: List<String>) {
+            val cmp = CountingComparator<String>(Comparator(String::compareTo))
+            input.keapify(cmp)
+            assertEquals(input.size - 1, cmp.count)
+        }
+
+        private fun testStability(expectedSize: Int, q: PriorityQueue<StableComparable>) {
+            assertEquals(expectedSize, q.size)
+            var prev = q.poll()
+            var current = q.poll()
+            while (current != null) {
+                if (current.compareTo(prev ?: throw NullPointerException()) == 0) {
+                    assertTrue(prev.index < current.index)
+                }
+                prev = current
+                current = q.poll()
+            }
         }
     }
 }

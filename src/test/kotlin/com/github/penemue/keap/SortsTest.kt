@@ -50,10 +50,13 @@ class SortsTest {
         testSort(sortName, 4000000, { collection, cmp -> collection.jvmSort(cmp) })
     }
 
-    private fun testSort(sortName: String, inputSize: Int, sort: (Collection<String>, Comparator<String>) -> Array<String>) {
-        val cmp = CountingComparator<String>(Comparator(String::compareTo))
-        val sorted = sort(randomStringListOfSize(inputSize), cmp)
-        repeat(inputSize - 1, { assertTrue(sorted[it] <= sorted[it + 1]) })
-        println("$sortName: input size = $inputSize, number of comparisons = ${cmp.count}")
+    companion object {
+
+        private fun testSort(sortName: String, inputSize: Int, sort: (Collection<String>, Comparator<String>) -> Array<String>) {
+            val cmp = CountingComparator<String>(Comparator(String::compareTo))
+            val sorted = sort(randomStringListOfSize(inputSize), cmp)
+            repeat(inputSize - 1, { assertTrue(sorted[it] <= sorted[it + 1]) })
+            println("$sortName: input size = $inputSize, number of comparisons = ${cmp.count}")
+        }
     }
 }
