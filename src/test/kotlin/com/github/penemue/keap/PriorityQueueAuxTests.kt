@@ -48,6 +48,21 @@ class PriorityQueueAuxTests {
         testStability(100000, rndList.keapify())
     }
 
+    @Test
+    fun randomLoad() {
+        val randomStrings = RandomStrings.randomStringListOfSize(1000000)
+
+        val jupqCmp = CountingComparator<String>(Comparator(String::compareTo))
+        val jupq = java.util.PriorityQueue<String>(jupqCmp)
+        testQueue(jupq, randomStrings)
+        println("java.util.PriorityQueue did ${jupqCmp.count} comparisons")
+
+        val pqCmp = CountingComparator<String>(Comparator(String::compareTo))
+        val pq = PriorityQueue(MIN_CAPACITY, pqCmp)
+        testQueue(pq, randomStrings)
+        println("PriorityQueue did ${pqCmp.count} comparisons")
+    }
+
     companion object {
 
         private class StableComparable(var value: Int) : Comparable<StableComparable> {
@@ -79,6 +94,19 @@ class PriorityQueueAuxTests {
                 }
                 prev = current
                 current = q.poll()
+            }
+        }
+
+        private fun testQueue(q: Queue<String>, randomStrings: List<String>) {
+            repeat(10000, { q.offer(randomStrings[it]) })
+            var i = q.size
+            while (i < randomStrings.size) {
+                repeat((i % 10) + 1, {
+                    if (i < randomStrings.size) {
+                        q.offer(randomStrings[i++])
+                    }
+                })
+                repeat((i % 10) + 1, { q.poll() })
             }
         }
     }
