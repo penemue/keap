@@ -10,9 +10,9 @@ Keap is stable, that is, it ***keeps*** initial order of equal elements.
 
 It's faster than binary heap in terms of number of comparisons. For any kind of input (random or ordered) of size `n`,
 the *heapify* procedure requires exactly `n - 1` comparisons. Binary heap reaches this number of comparisons
-only for ordered input. For random input, keap does approximately 90% less comparisons than binary heap
-to *heapify*, to *offer* and to *poll*. Though, array-backed keap consumes 2-3 times more memory than array-backed
-binary heap.
+only for ordered input. For random input, keap compared to binary heap does approximately 90% less comparisons
+to *heapify*, 20% more comparisons to *offer*<sup><a href="#todo">[todo]</a></sup>, and more than 3 times less
+comparisons to *poll*. Though, array-backed keap consumes 2-3 times more memory than array-backed binary heap.
 
 Performance summary of keap and binary heap (both array-backed) is as follows: 
 <table>
@@ -63,7 +63,7 @@ Performance summary of keap and binary heap (both array-backed) is as follows:
 Here are two applications: keap-based `PriorityQueue` as a replacement of `java.util.PriorityQueue` and *Keapsort*
 sorting algorithm. Both might be useful in two cases:
 
-1. stability is needed;
+1. stability is a must;
 1. comparing elements is rather heavyweight operation (e.g., it requires a database access).
 
 ##PriorityQueue
@@ -94,6 +94,8 @@ is used to build the project:
     ./gradlew build
 
 ##ToDo
+
+<span id="todo">On increasing capacity, get rid of *heapify*, thus reducing number of comparisons on *offer*.</span> 
 
 Looks like a tree-backed version of keap could be exposed as an immutable/persistent/lock-free heap data structure.
 In addition, it could support heap merge operation in
