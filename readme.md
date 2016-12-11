@@ -88,7 +88,7 @@ Like Heapsort, Keapsort is not a modern CPU-friendly algorithm since it has poor
 Like Heapsort, Keapsort doesn't seem to parallelize well.
 
 ##Building from Source
-JDK 1.8 and [Kotlin](https://github.com/JetBrains/kotlin) 1.0.5 are required. [Gradle](http://www.gradle.org)
+JDK 1.8 and [Kotlin](http://kotlinlang.org) 1.0.5 are required. [Gradle](http://www.gradle.org)
 is used to build the project:
 
     ./gradlew build
