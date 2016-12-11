@@ -58,7 +58,7 @@ class PriorityQueueAuxTests {
         println("java.util.PriorityQueue did ${jupqCmp.count} comparisons")
 
         val pqCmp = CountingComparator<String>(Comparator(String::compareTo))
-        val pq = PriorityQueue(MIN_CAPACITY, pqCmp)
+        val pq = PriorityQueue(pqCmp)
         testQueue(pq, randomStrings)
         println("PriorityQueue did ${pqCmp.count} comparisons")
     }

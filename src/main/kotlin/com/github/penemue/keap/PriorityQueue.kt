@@ -2,7 +2,7 @@ package com.github.penemue.keap
 
 import java.util.*
 
-fun <T> Collection<T>.keapify(comparator: Comparator<in T>? = null) = PriorityQueue(this, comparator)
+fun <T> Collection<T>.keapify(cmp: Comparator<in T>? = null) = PriorityQueue(this, cmp)
 
 fun <T> PriorityQueue<T>.copyOf() = PriorityQueue(this)
 
@@ -17,7 +17,10 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY, cmp: Comparator<in T>?
     @Suppress("UNCHECKED_CAST")
     private val cmp: Comparator<in T> = cmp ?: Comparator { o1, o2 -> (o1 as Comparable<T>).compareTo((o2)) }
 
-    constructor(c: Collection<T>, comparator: Comparator<in T>? = null) : this(c.size, comparator) {
+    constructor(cmp: Comparator<in T>) : this(MIN_CAPACITY, cmp) {
+    }
+
+    constructor(c: Collection<T>, cmp: Comparator<in T>? = null) : this(c.size, cmp) {
         count = c.size
         c.forEach { queue[nextFree++] = it ?: throw NullPointerException() }
         heapify()
