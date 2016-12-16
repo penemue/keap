@@ -2,6 +2,7 @@ package com.github.penemue.keap
 
 import org.junit.Assert.*
 import org.junit.Test
+import java.io.*
 import java.util.*
 
 const val SIZE = 1000
@@ -466,6 +467,31 @@ class PriorityQueueTests {
         val s = q.toString()
         for (i in 0..SIZE - 1) {
             assertTrue(s.indexOf(i.toString()) >= 0)
+        }
+    }
+
+    /**
+     * A deserialized serialized queue has same elements
+     */
+    @Test
+    fun testSerialization() {
+        val q = populatedQueue(SIZE)
+        try {
+            val bout = ByteArrayOutputStream(10000)
+            val output = ObjectOutputStream(BufferedOutputStream(bout))
+            output.writeObject(q)
+            output.close()
+
+            val bin = ByteArrayInputStream(bout.toByteArray())
+            val input = ObjectInputStream(BufferedInputStream(bin))
+            val r = input.readObject() as PriorityQueue<*>
+            assertEquals(q.size, r.size)
+            while (!q.isEmpty()) {
+                assertEquals(q.remove(), r.remove())
+            }
+        } catch (e: Exception) {
+            println(e)
+            shouldThrow()
         }
     }
 

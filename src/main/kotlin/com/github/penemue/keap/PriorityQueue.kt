@@ -1,21 +1,27 @@
 package com.github.penemue.keap
 
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
+import java.io.Serializable
 import java.util.*
 
 fun <T> Collection<T>.keapify(cmp: Comparator<in T>? = null) = PriorityQueue(this, cmp)
 
 fun <T> PriorityQueue<T>.copyOf() = PriorityQueue(this)
 
-open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY, cmp: Comparator<in T>? = null) : AbstractQueue<T>() {
+open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
+                            private val cmp: Comparator<in T>? = null) : AbstractQueue<T>(), Serializable {
 
     private var count = 0
+    @Transient
     private var nextFree = 0
+    @Transient
     private var modCount = 0
     @Suppress("UNCHECKED_CAST")
+    @Transient
     private var queue: Array<T?> = arrayOfNulls<Any>(capacity.toCapacity) as Array<T?>
+    @Transient
     private var heap = IntArray(queue.size - 1)
-    @Suppress("UNCHECKED_CAST")
-    private val cmp: Comparator<in T> = cmp ?: Comparator { o1, o2 -> (o1 as Comparable<T>).compareTo((o2)) }
 
     constructor(cmp: Comparator<in T>) : this(MIN_CAPACITY, cmp) {
     }
@@ -200,13 +206,39 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY, cmp: Comparator<in T>?
         if (value1 == null) return i2
         if (value2 == null) return i1
 
-        val compare = cmp.compare(value1, value2)
+        @Suppress("UNCHECKED_CAST")
+        val compare = cmp?.compare(value1, value2) ?: (value1 as Comparable<T>).compareTo(value2)
         if (compare == 0) return if (i1 < i2) i1 else i2
         if (compare < 0) return i1
         return i2
     }
 
-    internal companion object KeapMiscellaneous {
+    private fun writeObject(output: ObjectOutputStream) {
+        // write out element count
+        output.defaultWriteObject()
+        // write out all elements
+        forEach { output.writeObject(it) }
+    }
+
+    private fun readObject(input: ObjectInputStream) {
+        // read in element count
+        input.defaultReadObject()
+        // realloc keap
+        allocHeap(count)
+        // read in all elements
+        repeat(count, {
+            @Suppress("UNCHECKED_CAST")
+            queue[it] = input.readObject() as T ?: throw NullPointerException()
+        })
+        // build the keap
+        heapify()
+        // the queue is compacted
+        nextFree = count
+    }
+
+    internal companion object {
+
+        private const val serialVersionUID = 2808197179219145169L
 
         const val MIN_CAPACITY = 4
         private val powersOf2: IntArray

@@ -1,6 +1,6 @@
 package com.github.penemue.keap
 
-import com.github.penemue.keap.PriorityQueue.KeapMiscellaneous.MIN_CAPACITY
+import com.github.penemue.keap.PriorityQueue.Companion.MIN_CAPACITY
 import com.github.penemue.keap.RandomStrings.randomStringListOfSize
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
