@@ -1,8 +1,9 @@
 #Keap
 
 [![Build Status](https://travis-ci.org/penemue/keap.png?branch=master)](https://travis-ci.org/penemue/keap)
-[![GitHub license](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![Apache License 2.0](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 ![Repository Size](https://reposs.herokuapp.com/?path=penemue/keap)
+[![Pure Kotlin](https://img.shields.io/badge/100%25-kotlin-orange.svg)](https://kotlinlang.org)
 
 Keap is a heap data structure similar to [binary heap](https://en.wikipedia.org/wiki/Binary_heap).
 
