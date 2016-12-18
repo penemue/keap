@@ -9,6 +9,38 @@ fun <T> Collection<T>.keapify(cmp: Comparator<in T>? = null) = PriorityQueue(thi
 
 fun <T> PriorityQueue<T>.copyOf() = PriorityQueue(this)
 
+/**
+ * A priority [queue][java.util.Queue] based on a keap, a heap data structure similar to binary heap.
+ * The elements of the priority queue are ordered according to their [natural ordering][java.lang.Comparable],
+ * or by a [comparator][Comparator] provided at queue construction time, depending on which constructor is
+ * used. A priority queue does not permit `null` elements. A priority queue relying on natural ordering also
+ * does not permit insertion of non-comparable objects (doing so results in `ClassCastException`).
+ *
+ * This priority queue is a full featured replacement of [java.util.PriorityQueue] with two advantages:
+ * better performance and stability.
+ *
+ * Better performance means that the priority queue almost always does less comparisons of its elements.
+ * For random input, the priority queue compared to `java.util.PriorityQueue` does approximately 90%
+ * less comparisons to *heapify*, 20% more comparisons to *offer*, and more than 3 times less comparisons
+ * to *poll*. Though, it requires 2-3 times more memory than `java.util.PriorityQueue`.
+ *
+ * Stability means that the priority queue keeps initial order of equal elements added to the queue.
+ * This feature allows [Keapsort][keapSorted], a sorting algorithm similar to
+ * [Heapsort][https://en.wikipedia.org/wiki/Heapsort], but stable and faster.
+ *
+ * This class and its iterator implement all of the *optional* methods of the [java.util.Collection] and
+ * [java.util.Iterator] interfaces. The Iterator provided in method [iterator()][iterator] is *not*
+ * guaranteed to traverse the elements of the priority queue in any particular order. If you need ordered
+ * traversal, consider using [SortedIterable].
+ *
+ * The priority queue is not synchronized.
+ *
+ * @author [Vyacheslav Lukianov][https://github.com/penemue]
+ * @param T the type of elements held in this collection
+ * @see SortedIterable
+ * @see keapSorted
+ * @see keapSort
+ */
 open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
                             private val cmp: Comparator<in T>? = null) : AbstractQueue<T>(), Serializable {
 
@@ -23,15 +55,35 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
     @Transient
     private var heap = IntArray(queue.size - 1)
 
+    /**
+     * Creates a `PriorityQueue` with the default initial [capacity][MIN_CAPACITY] and whose elements
+     * are ordered according to the specified comparator.
+     *
+     * @param  cmp the comparator that will be used to order this priority queue
+     */
     constructor(cmp: Comparator<in T>) : this(MIN_CAPACITY, cmp) {
     }
 
+    /**
+     * Creates a `PriorityQueue` containing the elements in the specified collection ordered according
+     * to the specified comparator. If the comparator is not set (i.e. it's `null`) the priority queue
+     * will be ordered according to the [natural ordering][java.lang.Comparable] of its elements.
+     *
+     * @param  c the collection whose elements are to be placed into this priority queue
+     * @param  cmp the comparator that will be used to order this priority queue
+     */
     constructor(c: Collection<T>, cmp: Comparator<in T>? = null) : this(c.size, cmp) {
         count = c.size
         c.forEach { queue[nextFree++] = it ?: throw NullPointerException() }
         heapify()
     }
 
+    /**
+     * Copying constructor creates a `PriorityQueue` which is the same as the specified priority queue.
+     *
+     * @param c the priority queue which the copy should be created of
+     * @see copyOf
+     */
     constructor(c: PriorityQueue<T>) : this(c.queue.size, c.cmp) {
         count = c.count
         nextFree = c.nextFree
@@ -39,6 +91,13 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
         heap copyFrom c.heap
     }
 
+    /**
+     * Returns the comparator used to order the elements in this queue, or `null` if this queue is
+     * sorted according to the {[natural ordering][java.lang.Comparable] of its elements.
+     *
+     * @return the comparator used to order this queue, or `null` if this queue is sorted according
+     * to the natural ordering of its elements
+     */
     fun comparator() = cmp
 
     override fun peek(): T? = if (isEmpty()) null else queue[heap[0]]
@@ -48,11 +107,19 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
     }
 
     /**
-     * Retrieves and removes the least element if any without [compaction][compactIfNecessary] of the queue.
-     * Is used in [keapSort].
+     * Retrieves and removes the least element if any exists without [compaction][compactIfNecessary] of this queue.
+     * Is used in [keapSort] in order to avoid unnecessary comparisons being performed during compaction.
      */
     fun pollRaw(): T? = if (isEmpty()) null else removeAt(heap[0])
 
+    /**
+     * Inserts the specified element into this priority queue.
+     *
+     * @return `true` (as specified by [Queue.offer()][java.util.Queue#offer])
+     * @throws ClassCastException if the specified element cannot be compared with elements currently in this
+     * priority queue according to the priority queue's ordering
+     * @throws NullPointerException if the specified element is `null`
+     */
     override fun offer(e: T): Boolean {
         val element = e ?: throw NullPointerException()
         val i = nextFree
@@ -78,6 +145,15 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
 
     val capacity: Int get() = queue.size
 
+    /**
+     * Removes a single instance of the specified element from this queue, if it is present. More formally,
+     * removes an element `e` such that `element.equals(e)`, if this queue contains one or more such elements.
+     * Returns `true` if and only if this queue contained the specified `element` (or equivalently, if this
+     * queue changed as a result of the call).
+     *
+     * @param element object to be removed from this queue, if present
+     * @return `true` if this queue changed as a result of the call
+     */
     override fun remove(element: T): Boolean {
         val i = indexOf(element)
         if (i < 0) return false
@@ -85,8 +161,22 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
         return true
     }
 
+    /**
+     * Returns `true` if this queue contains the specified `element`. More formally, returns `true`
+     * if and only if this queue contains at least one element `e` such that `element.equals(e)`.
+     *
+     * @param element object to be checked for containment in this queue
+     * @return `true` if this queue contains the specified element
+     */
     override fun contains(element: T) = indexOf(element) >= 0
 
+    /**
+     * Returns an iterator over the elements in this queue. The iterator does not return the elements
+     * in any particular order.
+     *
+     * @return an iterator over the elements in this queue
+     * @see SortedIterable
+     */
     override fun iterator(): MutableIterator<T> {
         return object : MutableIterator<T> {
 
