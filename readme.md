@@ -5,11 +5,11 @@
 ![Repository Size](https://reposs.herokuapp.com/?path=penemue/keap)
 [![Pure Kotlin](https://img.shields.io/badge/100%25-kotlin-orange.svg)](https://kotlinlang.org)
 
-Keap is a heap data structure similar to [binary heap](https://en.wikipedia.org/wiki/Binary_heap). It keeps separately
-the queue of elements and the [tournament (winner) tree](http://www.geeksforgeeks.org/tournament-tree-and-binary-heap)
-above the queue. 
+Keap is a heap data structure written in [Kotlin](http://kotlinlang.org) similar to
+[binary heap](https://en.wikipedia.org/wiki/Binary_heap). It keeps separately the queue of elements and the
+[tournament (winner) tree](http://www.geeksforgeeks.org/tournament-tree-and-binary-heap) above the queue. 
 
-Keap is stable, that is, it ***keeps*** initial order of equal elements.
+Keap is stable, that is, it keeps initial order of equal elements.
 
 It's faster than binary heap in terms of number of comparisons. For any kind of input (random or ordered) of size `n`,
 the *heapify* procedure requires exactly `n - 1` comparisons. Binary heap reaches this number of comparisons
