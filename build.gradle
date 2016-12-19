@@ -28,3 +28,5 @@ test {
     //jvmArgs = ['-Djava.util.Arrays.useLegacyMergeSort=true']
     testLogging.showStandardStreams = true
 }
+
+defaultTasks 'clean', 'build'
