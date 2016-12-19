@@ -1,3 +1,18 @@
+/**
+ * Copyright 2016 Vyacheslav Lukianov (https://github.com/penemue)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.penemue.keap
 
 import java.io.ObjectInputStream
@@ -11,6 +26,7 @@ fun <T> PriorityQueue<T>.copyOf() = PriorityQueue(this)
 
 /**
  * A priority [queue][java.util.Queue] based on a keap, a heap data structure similar to binary heap.
+ * It keeps separately the [queue][queue] of elements and the [tournament (winner tree)][heap] above the queue.
  * The elements of the priority queue are ordered according to their [natural ordering][java.lang.Comparable],
  * or by a [comparator][Comparator] provided at queue construction time, depending on which constructor is
  * used. A priority queue does not permit `null` elements. A priority queue relying on natural ordering also
@@ -35,7 +51,7 @@ fun <T> PriorityQueue<T>.copyOf() = PriorityQueue(this)
  *
  * The priority queue is not synchronized.
  *
- * @author [Vyacheslav Lukianov][https://github.com/penemue]
+ * @author Vyacheslav Lukianov (https://github.com/penemue)
  * @param T the type of elements held in this collection
  * @see SortedIterable
  * @see keapSorted

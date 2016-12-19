@@ -1,6 +1,3 @@
-group 'com.github.penemue'
-version '0.0.1-SNAPSHOT'
-
 buildscript {
     ext.kotlin_version = '1.0.5'
 
@@ -11,6 +8,13 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
+
+plugins {
+    id "com.github.hierynomus.license" version "0.13.1"
+}
+
+group 'com.github.penemue'
+version '0.0.1-SNAPSHOT'
 
 apply plugin: 'kotlin'
 
@@ -27,6 +31,19 @@ test {
     // uncomment the following line in order to test mergeSort instead of timSort
     //jvmArgs = ['-Djava.util.Arrays.useLegacyMergeSort=true']
     testLogging.showStandardStreams = true
+}
+
+license {
+    header rootProject.file('copyright.ftl')
+    strictCheck true
+    ext.inceptionYear = 2016
+    ext.year = Calendar.getInstance().get(Calendar.YEAR)
+    ext.owner = 'Vyacheslav Lukianov'
+    ext.ownerURL = 'https://github.com/penemue'
+    include "**/*.kt"
+    mapping {
+        kt = 'JAVADOC_STYLE'
+    }
 }
 
 defaultTasks 'clean', 'build'
