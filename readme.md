@@ -6,8 +6,8 @@
 [![Pure Kotlin](https://img.shields.io/badge/100%25-kotlin-orange.svg)](https://kotlinlang.org)
 
 Keap is a heap data structure written in [Kotlin](http://kotlinlang.org) similar to
-[binary heap](https://en.wikipedia.org/wiki/Binary_heap). It keeps separately the queue of elements and the
-[tournament (winner) tree](http://www.geeksforgeeks.org/tournament-tree-and-binary-heap) above the queue. 
+[binary heap](https://en.wikipedia.org/wiki/Binary_heap). It maintains separately the queue of elements and the
+[tournament tree](http://www.geeksforgeeks.org/tournament-tree-and-binary-heap) atop the queue. 
 
 Keap is stable, that is, it keeps initial order of equal elements.
 
@@ -98,16 +98,20 @@ is used to build the project:
 
 ##ToDo
 
-<span id="todo">On increasing capacity, get rid of *heapify*, thus reducing number of comparisons on *offer*.</span> 
+- <span id="todo">On increasing capacity, get rid of *heapify*, thus reducing number of comparisons on *offer*.</span>
+ 
+- Compare Keapsort to [Quicksort](https://en.wikipedia.org/wiki/Quicksort). 
 
-Looks like a tree-backed version of keap could be exposed as an immutable/persistent/lock-free heap data structure.
+- Looks like a tree-backed version of keap could be exposed as an immutable/persistent/lock-free heap data structure.
 In addition, it could support heap merge operation in
 [Θ](https://en.wikipedia.org/wiki/Big_O_notation)(*1*) time.
 
-##Related Reading
+##References
 
-1. Ralf Hinze. A simple implementation technique for priority search queues. In Xavier Leroy, editor,
-Proceedings of the sixth ACM SIGPLAN international conference on Functional programming (ICFP '01).
-[[PDF](http://www.cs.ox.ac.uk/ralf.hinze/publications/ICFP01.pdf)]
-1. Thomas Keh. Bulk-Parallel Priority Queue in External Memory. Bachelor Thesis, 07/11/2014.
-[[PDF](https://algo2.iti.kit.edu/download/bachelor_thesis_keh.pdf)]
+- [A simple implementation technique for priority search queues](http://www.cs.ox.ac.uk/ralf.hinze/publications/ICFP01.pdf)
+
+> Ralf Hinze. A simple implementation technique for priority search queues. In Xavier Leroy, editor, Proceedings of the sixth ACM SIGPLAN international conference on Functional programming (ICFP '01).
+
+- [Bulk-Parallel Priority Queue in External Memory](https://algo2.iti.kit.edu/download/bachelor_thesis_keh.pdf)
+
+> Thomas Keh. Bulk-Parallel Priority Queue in External Memory. Bachelor Thesis, 07/11/2014.
