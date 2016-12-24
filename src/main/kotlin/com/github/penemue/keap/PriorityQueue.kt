@@ -70,6 +70,8 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
     private var queue: Array<T?> = arrayOfNulls<Any>(capacity.toCapacity) as Array<T?>
     @Transient
     private var heap = IntArray(queue.size - 1)
+    @Transient
+    private var heapSize = heap.size
 
     /**
      * Creates a `PriorityQueue` with the default initial [capacity][MIN_CAPACITY] and whose elements
@@ -241,7 +243,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
     private fun indexOf(element: T) = queue.indexOfFirst { it != null && it == element }
 
     private fun heapify() {
-        var i = heap.size
+        var i = heapSize
         if (i > 0) {
             i /= 2
             for (j in i..i * 2) {
@@ -308,13 +310,14 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
         }
         queue = arrayOfNulls<Any?>(adjustedCapacity) as Array<T?>
         heap = IntArray(queue.size - 1)
+        heapSize = heap.size
     }
 
-    private fun queueLeftChild(parent: Int) = parent.leftChild - heap.size
+    private fun queueLeftChild(parent: Int) = parent.leftChild - heapSize
 
-    private fun queueRightChild(parent: Int) = parent.rightChild - heap.size
+    private fun queueRightChild(parent: Int) = parent.rightChild - heapSize
 
-    private fun queueParent(child: Int) = (child + heap.size).parent
+    private fun queueParent(child: Int) = (child + heapSize).parent
 
     private fun min(i1: Int, i2: Int): Int {
         if (i1 < 0) return i2
