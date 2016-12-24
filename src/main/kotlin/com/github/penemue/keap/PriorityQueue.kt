@@ -141,10 +141,20 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
         val i = nextFree
         if (i == queue.size) {
             val oldQueue = queue
-            allocHeap(i + 1)
+            // do not allocate new array for the queue if there is enough free space (not less than ~25%)
+            val newCapacity = Math.max(i, ((count + 1) * 4 / 3).toCapacity)
+            if (newCapacity > i) {
+                allocHeap(newCapacity)
+            }
             var j = 0
             oldQueue.forEach { it?.apply { queue[j++] = it } }
             nextFree = j
+            // if new array wasn't allocated pad the tail of the queue with nulls
+            if (oldQueue === queue) {
+                while (j < i) {
+                    oldQueue[j++] = null
+                }
+            }
             heapify()
         }
         queue[nextFree] = element
@@ -291,7 +301,12 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
 
     @Suppress("UNCHECKED_CAST")
     private fun allocHeap(capacity: Int) {
-        queue = arrayOfNulls<Any?>(capacity.toCapacity) as Array<T?>
+        val adjustedCapacity = capacity.toCapacity
+        @Suppress("SENSELESS_COMPARISON") // queue can be null during deserialization
+        if (queue != null && adjustedCapacity == queue.size) {
+            throw IllegalArgumentException("Allocating keap of the same size as existing")
+        }
+        queue = arrayOfNulls<Any?>(adjustedCapacity) as Array<T?>
         heap = IntArray(queue.size - 1)
     }
 
