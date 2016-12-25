@@ -153,9 +153,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
             nextFree = j
             // if new array wasn't allocated pad the tail of the queue with nulls
             if (oldQueue === queue) {
-                while (j < i) {
-                    oldQueue[j++] = null
-                }
+                Arrays.fill(oldQueue, j, i, null)
             }
             heapify()
         }
