@@ -69,7 +69,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
     @Transient
     private var queue: Array<T?> = arrayOfNulls<Any>(capacity.toCapacity) as Array<T?>
     @Transient
-    private var heap = IntArray(queue.size - 1)
+    private var heap = IntArray(queue.size - 1).apply { Arrays.fill(this, NIL) }
     @Transient
     private var heapSize = heap.size
 
@@ -264,7 +264,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
         while (i > 0) {
             i = i.parent
             val min = min(heap[i.leftChild], heap[i.rightChild])
-            if (heap[i] == min) {
+            if (min == NIL || heap[i] == min) {
                 break
             }
             heap[i] = min
@@ -309,7 +309,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
             throw IllegalArgumentException("Allocating keap of the same size as existing")
         }
         queue = arrayOfNulls<Any?>(adjustedCapacity) as Array<T?>
-        heap = IntArray(queue.size - 1)
+        heap = IntArray(queue.size - 1).apply { Arrays.fill(this, NIL) }
         heapSize = heap.size
     }
 
@@ -320,21 +320,17 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
     private fun queueParent(child: Int) = (child + heapSize).parent
 
     private fun min(i1: Int, i2: Int): Int {
-        if (i1 < 0) return i2
-        if (i2 < 0) return i1
-        if (i1 == i2) return i1
+        if (i1 == NIL) return i2
+        if (i2 == NIL) return i1
 
         val value1 = queue[i1]
         val value2 = queue[i2]
-        if (value1 == null && value2 == null) return -1
+        if (value1 == null && value2 == null) return NIL
         if (value1 == null) return i2
         if (value2 == null) return i1
 
         @Suppress("UNCHECKED_CAST")
-        val compare = cmp?.compare(value1, value2) ?: (value1 as Comparable<T>).compareTo(value2)
-        if (compare == 0) return if (i1 < i2) i1 else i2
-        if (compare < 0) return i1
-        return i2
+        return if (cmp?.compare(value1, value2) ?: (value1 as Comparable<T>).compareTo(value2) <= 0) i1 else i2
     }
 
     private fun writeObject(output: ObjectOutputStream) {
@@ -364,6 +360,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
 
         private const val serialVersionUID = 2808197179219145169L
 
+        private const val NIL = -1
         const val MIN_CAPACITY = 4
         private val powersOf2: IntArray
 
