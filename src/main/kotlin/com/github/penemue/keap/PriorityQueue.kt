@@ -153,7 +153,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
             nextFree = j
             // if new array wasn't allocated pad the tail of the queue with nulls
             if (oldQueue === queue) {
-                Arrays.fill(oldQueue, j, i, null)
+                oldQueue.fill(null, j, i)
             }
             heapify()
         }
@@ -241,7 +241,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
     private fun indexOf(element: T) = queue.indexOfFirst { it != null && it == element }
 
     private fun heapify() {
-        Arrays.fill(heap, NIL)
+        heap.fill(NIL)
         var i = heapSize
         if (i > 0) {
             i /= 2
@@ -382,7 +382,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
                     throw IllegalArgumentException()
                 }
                 // capacity if always a power of 2
-                val i = Arrays.binarySearch(powersOf2, this)
+                val i = powersOf2.binarySearch(this)
                 val result = if (i < 0) powersOf2[-i - 1] else powersOf2[i]
                 return if (result < MIN_CAPACITY) MIN_CAPACITY else result
             }
