@@ -69,7 +69,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
     @Transient
     private var queue: Array<T?> = arrayOfNulls<Any>(capacity.toCapacity) as Array<T?>
     @Transient
-    private var heap = IntArray(queue.size - 1).apply { Arrays.fill(this, NIL) }
+    private var heap = IntArray(queue.size - 1)
     @Transient
     private var heapSize = heap.size
 
@@ -243,16 +243,21 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
     private fun indexOf(element: T) = queue.indexOfFirst { it != null && it == element }
 
     private fun heapify() {
+        Arrays.fill(heap, NIL)
         var i = heapSize
         if (i > 0) {
             i /= 2
             for (j in i..i * 2) {
-                heap[j] = min(queueLeftChild(j), queueRightChild(j))
+                val min = min(queueLeftChild(j), queueRightChild(j))
+                if (min == NIL) break
+                heap[j] = min
             }
             while (i > 0) {
                 i /= 2
                 for (j in i..i * 2) {
-                    heap[j] = min(heap[j.leftChild], heap[j.rightChild])
+                    val min = min(heap[j.leftChild], heap[j.rightChild])
+                    if (min == NIL) break
+                    heap[j] = min
                 }
             }
         }
@@ -309,7 +314,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
             throw IllegalArgumentException("Allocating keap of the same size as existing")
         }
         queue = arrayOfNulls<Any?>(adjustedCapacity) as Array<T?>
-        heap = IntArray(queue.size - 1).apply { Arrays.fill(this, NIL) }
+        heap = IntArray(queue.size - 1)
         heapSize = heap.size
     }
 
