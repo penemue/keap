@@ -31,8 +31,6 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testCompile group: 'junit', name: 'junit', version: '4.11'
-    jmh 'org.openjdk.jmh:jmh-core:1.17.3'
-    jmh 'org.openjdk.jmh:jmh-generator-annprocess:1.17.3'
 }
 
 test {
