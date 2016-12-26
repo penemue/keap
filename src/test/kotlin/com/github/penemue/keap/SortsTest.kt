@@ -41,7 +41,6 @@ class SortsTest {
         testSort("keapSort", 100000, { collection, cmp -> collection.keapSort(cmp) })
         testSort("keapSort", 1000000, { collection, cmp -> collection.keapSort(cmp) })
         testSort("keapSort", 2000000, { collection, cmp -> collection.keapSort(cmp) })
-        testSort("keapSort", 4000000, { collection, cmp -> collection.keapSort(cmp) })
     }
 
     @Test
@@ -51,7 +50,6 @@ class SortsTest {
         testSort("heapSort", 100000, { collection, cmp -> collection.heapSort(cmp) })
         testSort("heapSort", 1000000, { collection, cmp -> collection.heapSort(cmp) })
         testSort("heapSort", 2000000, { collection, cmp -> collection.heapSort(cmp) })
-        testSort("heapSort", 4000000, { collection, cmp -> collection.heapSort(cmp) })
     }
 
     @Test
@@ -62,7 +60,6 @@ class SortsTest {
         testSort(sortName, 100000, { collection, cmp -> collection.jvmSort(cmp) })
         testSort(sortName, 1000000, { collection, cmp -> collection.jvmSort(cmp) })
         testSort(sortName, 2000000, { collection, cmp -> collection.jvmSort(cmp) })
-        testSort(sortName, 4000000, { collection, cmp -> collection.jvmSort(cmp) })
     }
 
     companion object {
