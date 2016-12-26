@@ -267,7 +267,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
         while (i > 0) {
             i = i.parent
             val min = min(heap[i.leftChild], heap[i.rightChild])
-            if (min == NIL || heap[i] == min) {
+            if (heap[i] == min) {
                 break
             }
             heap[i] = min
@@ -323,14 +323,14 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
     private fun queueParent(child: Int) = (child + heapSize).parent
 
     private fun min(i1: Int, i2: Int): Int {
-        if (i1 == NIL) return i2
         if (i2 == NIL) return i1
+        if (i1 == NIL) return i2
 
         val value1 = queue[i1]
         val value2 = queue[i2]
         if (value1 == null && value2 == null) return NIL
-        if (value1 == null) return i2
         if (value2 == null) return i1
+        if (value1 == null) return i2
 
         @Suppress("UNCHECKED_CAST")
         return if (cmp?.compare(value1, value2) ?: (value1 as Comparable<T>).compareTo(value2) <= 0) i1 else i2
