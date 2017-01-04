@@ -115,7 +115,7 @@ BenchmarkKeapQueue.offer    thrpt   20   3.142 ± 0.035  ops/us
 BenchmarkKeapQueue.peek     thrpt   20  84.234 ± 1.740  ops/us
 BenchmarkKeapQueue.poll     thrpt   20  13.600 ± 0.292  ops/us
 ```
-The scores above are numbers of operations per nanosecond, for *heapify* - per millisecond. So the greater the score,
+The scores above are numbers of operations per microsecond, for *heapify* - per millisecond. So the greater the score,
 the better performance.
 
 ##ToDo
