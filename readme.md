@@ -70,11 +70,9 @@ sorting algorithm. Both might be useful in two cases:
 1. comparing elements is rather heavyweight operation (e.g., it requires a database access).
 
 ##PriorityQueue
-
 PriorityQueue is a keap-based stable replacement of `java.util.PriorityQueue`. 
 
 ##Keapsort
-
 Keapsort is a [Heapsort](https://en.wikipedia.org/wiki/Heapsort) with keap used instead of binary heap. Keapsort is a
 comparison-based sorting algorithm with a worst-case [O](https://en.wikipedia.org/wiki/Big_O_notation)(*n* log *n*)
 runtime. As keap is a stable priority queue, Keapsort is stable. Unlike Heapsort, Keapsort doesn't have an in-place
@@ -91,10 +89,34 @@ Like Heapsort, Keapsort is not a modern CPU-friendly algorithm since it has poor
 Like Heapsort, Keapsort doesn't seem to parallelize well.
 
 ##Building from Source
-JDK 1.8 and [Kotlin](http://kotlinlang.org) 1.0.5 are required. [Gradle](http://www.gradle.org)
-is used to build the project:
+[Gradle](http://www.gradle.org) is used to build, test, and run benchmarks. JDK 1.8 and [Kotlin](http://kotlinlang.org)
+1.0.5 are required. To build the project, run:
 
-    ./gradlew build
+    ./gradlew
+
+##Benchmarks
+[JMH Gradle Plugin](https://github.com/melix/jmh-gradle-plugin) is used to build and run benchmarks.
+Benchmark results are obtained on a PC running under Windows 7 with Intel(R) Core(TM) i7-3770 3.4 GHz CPU
+and 64-bit JRE build 1.8.0_112-b15 with the following java parameters: `-Xms1g -Xmx1g`. To get results in your
+environment, run:
+                                                                                   
+    ./gradlew clean jar jmh
+    
+For `java.util.PriorityQueue` and keap-based PriorityQueue, four operations are examined: *heapify* (building the queue
+from a collection), *offer*, *peek*, and *poll*. Current results are as follows:
+```
+Benchmark                    Mode  Cnt   Score   Error   Units
+BenchmarkJavaQueue.heapify  thrpt   20   1.821 ± 0.030  ops/ms
+BenchmarkJavaQueue.offer    thrpt   20   3.609 ± 0.074  ops/us
+BenchmarkJavaQueue.peek     thrpt   20  78.374 ± 2.540  ops/us
+BenchmarkJavaQueue.poll     thrpt   20   4.252 ± 0.082  ops/us
+BenchmarkKeapQueue.heapify  thrpt   20   3.323 ± 0.032  ops/ms
+BenchmarkKeapQueue.offer    thrpt   20   3.142 ± 0.035  ops/us
+BenchmarkKeapQueue.peek     thrpt   20  84.234 ± 1.740  ops/us
+BenchmarkKeapQueue.poll     thrpt   20  13.600 ± 0.292  ops/us
+```
+The scores above are numbers of operations per nanosecond, for *heapify* - per millisecond. So the greater the score,
+the better performance.
 
 ##ToDo
 
@@ -105,13 +127,3 @@ is used to build the project:
 - Looks like a tree-backed version of keap could be exposed as an immutable/persistent/lock-free heap data structure.
 In addition, it could support heap merge operation in
 [Θ](https://en.wikipedia.org/wiki/Big_O_notation)(*1*) time.
-
-##References
-
-- [A simple implementation technique for priority search queues](http://www.cs.ox.ac.uk/ralf.hinze/publications/ICFP01.pdf)
-
-> Ralf Hinze. A simple implementation technique for priority search queues. In Xavier Leroy, editor, Proceedings of the sixth ACM SIGPLAN international conference on Functional programming (ICFP '01).
-
-- [Bulk-Parallel Priority Queue in External Memory](https://algo2.iti.kit.edu/download/bachelor_thesis_keh.pdf)
-
-> Thomas Keh. Bulk-Parallel Priority Queue in External Memory. Bachelor Thesis, 07/11/2014.
