@@ -79,7 +79,7 @@ runtime. As keap is a stable priority queue, Keapsort is stable. Unlike Heapsort
 version.
 
 Like Heapsort, Keapsort produces first output after [Θ](https://en.wikipedia.org/wiki/Big_O_notation)(*n*) comparisons.
-For Keapsort, this Θ(n) estimation is just equal to `n - 1`. To sort random input completely, Keapsort does almost
+For Keapsort, this Θ(n) estimate is just equal to `n - 1`. To sort random input completely, Keapsort does almost
 two times less comparisons than Heapsort, nearly 1% less comparisons than
 [Mergesort](https://en.wikipedia.org/wiki/Merge_sort) and 1-2% more comparisons than
 [Timsort](https://en.wikipedia.org/wiki/Timsort).
@@ -103,7 +103,8 @@ environment, run:
     ./gradlew clean jar jmh
     
 For `java.util.PriorityQueue` and keap-based PriorityQueue, four operations are examined: *heapify* (building the queue
-from a collection), *offer*, *peek*, and *poll*. Current results are as follows:
+from a collection), *offer*, *peek*, and *poll*. The queue elements are random strings of length ~30 characters with
+constant 10-characters prefix. Current results are as follows:
 ```
 Benchmark                    Mode  Cnt   Score   Error   Units
 BenchmarkJavaQueue.heapify  thrpt   20   1.821 ± 0.030  ops/ms
