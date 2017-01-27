@@ -19,6 +19,8 @@ package com.github.penemue.keap
 
 import org.openjdk.jmh.annotations.*
 import org.openjdk.jmh.infra.Blackhole
+import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -44,13 +46,14 @@ abstract class BenchmarkBase {
         private const val PRIORITY_QUEUE_SIZE = 10000
         private const val RANDOM_STRING_COUNT = 1000000
         private val randomStrings: Array<String>
+        private val tenDigits = (NumberFormat.getIntegerInstance() as DecimalFormat).apply { applyPattern("0000000000") }
 
         init {
             val r = Random()
             @Suppress("UNCHECKED_CAST")
             randomStrings = (arrayOfNulls<String>(RANDOM_STRING_COUNT) as Array<String>).apply {
                 repeat(RANDOM_STRING_COUNT, {
-                    this[it] = "0000000000${Math.abs(r.nextLong())}"
+                    this[it] = "aaaaaaaaaa${Math.abs(r.nextLong())}"
                 })
             }
             shuffleStrings()
@@ -63,22 +66,25 @@ abstract class BenchmarkBase {
 
     private var queue: Queue<String>? = null
     private var i = 0
+    private var l = 10000000000L
+    private var decreasingElement = ""
 
     @Setup
-    fun prepare() {
+    fun setupBenchmark() {
         shuffleStrings()
         queue = createQueue(randomStrings.copyOfRange(0, PRIORITY_QUEUE_SIZE).asList())
         i = PRIORITY_QUEUE_SIZE
     }
 
     @Setup(Level.Invocation)
-    fun mutateQueue() {
+    fun setupInvocation() {
         while (queue!!.size <= PRIORITY_QUEUE_SIZE) {
             offerRandomValue()
         }
         while (queue!!.size > PRIORITY_QUEUE_SIZE) {
             queue!!.poll()
         }
+        decreasingElement = tenDigits.format(--l)
     }
 
     @Benchmark
@@ -113,6 +119,14 @@ abstract class BenchmarkBase {
     @Fork(4)
     fun offer(bh: Blackhole) {
         bh.consume(offerRandomValue())
+    }
+
+    @Benchmark
+    @Warmup(iterations = 5, time = 1)
+    @Measurement(iterations = 5, time = 1)
+    @Fork(4)
+    fun offerDecreasing(bh: Blackhole) {
+        bh.consume(queue!!.offer(decreasingElement))
     }
 
     private fun offerRandomValue(): Boolean {
