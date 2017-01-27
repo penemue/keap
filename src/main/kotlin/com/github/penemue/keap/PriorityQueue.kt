@@ -20,13 +20,20 @@ import java.io.ObjectOutputStream
 import java.io.Serializable
 import java.util.*
 
+/**
+ * Extension function creating the priority queue from a [collection][Collection] with optionally specified
+ * [comparator][Comparator].
+ */
 fun <T> Collection<T>.keapify(cmp: Comparator<in T>? = null) = PriorityQueue(this, cmp)
 
+/**
+ * Extension function creating the copy of this priority queue.
+ */
 fun <T> PriorityQueue<T>.copyOf() = PriorityQueue(this)
 
 /**
- * A priority [queue][java.util.Queue] based on a keap, a heap data structure similar to binary heap.
- * It keeps separately the [queue][queue] of elements and the [tournament (winner tree)][heap] above the queue.
+ * A priority [queue][java.util.Queue] based on keap, a heap data structure similar to binary heap.
+ * It maintains separately the [queue][queue] of elements and the [tournament tree][heap] atop the queue.
  * The elements of the priority queue are ordered according to their [natural ordering][java.lang.Comparable],
  * or by a [comparator][Comparator] provided at queue construction time, depending on which constructor is
  * used. A priority queue does not permit `null` elements. A priority queue relying on natural ordering also
@@ -37,16 +44,16 @@ fun <T> PriorityQueue<T>.copyOf() = PriorityQueue(this)
  *
  * Better performance means that the priority queue almost always does less comparisons of its elements.
  * For random input, the priority queue compared to `java.util.PriorityQueue` does approximately 90%
- * less comparisons to *heapify*, 20% more comparisons to *offer*, and more than 3 times less comparisons
- * to *poll*. Though, it requires 2-3 times more memory than `java.util.PriorityQueue`.
+ * less comparisons to [heapify][heapify], 20% more comparisons to [offer][offer], and more than 3 times less
+ * comparisons to [poll][poll]. Though, it requires 2-3 times more memory than `java.util.PriorityQueue`.
  *
  * Stability means that the priority queue keeps initial order of equal elements added to the queue.
  * This feature allows [Keapsort][keapSorted], a sorting algorithm similar to
- * [Heapsort][https://en.wikipedia.org/wiki/Heapsort], but stable and faster.
+ * [Heapsort][https://en.wikipedia.org/wiki/Heapsort], but stable and faster in terms of number of comparisons.
  *
  * This class and its iterator implement all of the *optional* methods of the [java.util.Collection] and
- * [java.util.Iterator] interfaces. The Iterator provided in method [iterator()][iterator] is *not*
- * guaranteed to traverse the elements of the priority queue in any particular order. If you need ordered
+ * [java.util.Iterator] interfaces. The Iterator provided by [iterator][iterator] is *not*
+ * guaranteed to traverse the elements of the priority queue in any order. If you need ordered
  * traversal, consider using [SortedIterable].
  *
  * The priority queue is not synchronized.

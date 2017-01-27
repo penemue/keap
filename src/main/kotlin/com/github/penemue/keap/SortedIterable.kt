@@ -17,6 +17,10 @@ package com.github.penemue.keap
 
 import java.util.*
 
+/**
+ * Iterates over the elements of the specified [collection][c]. Returned elements are sorted according to their
+ * [natural ordering][Comparable] or by the specified [comparator][cmp].
+ */
 open class SortedIterable<out T>(private val c: Collection<T>, private val cmp: Comparator<in T>? = null) : Iterable<T> {
 
     override fun iterator(): Iterator<T> {
@@ -32,5 +36,4 @@ open class SortedIterable<out T>(private val c: Collection<T>, private val cmp: 
             }
         }
     }
-
 }
