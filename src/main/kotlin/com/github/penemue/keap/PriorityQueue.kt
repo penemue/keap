@@ -306,6 +306,9 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
         return result?.apply {
             queue[i] = null
             siftUpToRoot(i)
+            if (i == nextFree - 1) {
+                --nextFree
+            }
             --count
             ++modCount
         }
