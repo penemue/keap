@@ -102,19 +102,23 @@ environment, run:
                                                                                    
     ./gradlew clean jar jmh
     
-For `java.util.PriorityQueue` and keap-based PriorityQueue, four operations are examined: *heapify* (building the queue
-from a collection), *offer*, *peek*, and *poll*. The queue elements are random strings of length ~30 characters with
-constant 10-characters prefix. Current results are as follows:
+For `java.util.PriorityQueue` and keap-based PriorityQueue, five operations are examined: *heapify* (building the queue
+from a collection), *offer*, *offerDecreasing* (offering successively decreasing elements), *peek*, and *poll*.
+The queue elements are random strings (except for *offerDecreasing* benchmark) of length ~30 characters with constant
+10-characters prefix. Current results are as follows:
 ```
-Benchmark                    Mode  Cnt   Score   Error   Units
-BenchmarkJavaQueue.heapify  thrpt   20   1.821 ± 0.030  ops/ms
-BenchmarkJavaQueue.offer    thrpt   20   3.609 ± 0.074  ops/us
-BenchmarkJavaQueue.peek     thrpt   20  78.374 ± 2.540  ops/us
-BenchmarkJavaQueue.poll     thrpt   20   4.252 ± 0.082  ops/us
-BenchmarkKeapQueue.heapify  thrpt   20   3.323 ± 0.032  ops/ms
-BenchmarkKeapQueue.offer    thrpt   20   3.142 ± 0.035  ops/us
-BenchmarkKeapQueue.peek     thrpt   20  84.234 ± 1.740  ops/us
-BenchmarkKeapQueue.poll     thrpt   20  13.600 ± 0.292  ops/us
+Benchmark                            Mode  Cnt   Score   Error   Units
+BenchmarkJavaQueue.heapify          thrpt   20   1.826 ± 0.018  ops/ms
+BenchmarkJavaQueue.offer            thrpt   20   4.041 ± 0.066  ops/us
+BenchmarkJavaQueue.offerDecreasing  thrpt   20  15.823 ± 0.335  ops/us
+BenchmarkJavaQueue.peek             thrpt   20  72.563 ± 1.242  ops/us
+BenchmarkJavaQueue.poll             thrpt   20   3.882 ± 0.079  ops/us
+BenchmarkKeapQueue.heapify          thrpt   20   3.360 ± 0.042  ops/ms
+BenchmarkKeapQueue.offer            thrpt   20   3.595 ± 0.081  ops/us
+BenchmarkKeapQueue.offerDecreasing  thrpt   20  11.695 ± 0.114  ops/us
+BenchmarkKeapQueue.peek             thrpt   20  71.267 ± 1.263  ops/us
+BenchmarkKeapQueue.poll             thrpt   20  10.913 ± 0.299  ops/us
+
 ```
 The scores above are numbers of operations per microsecond, for *heapify* - per millisecond. So the greater the score,
 the better performance.
