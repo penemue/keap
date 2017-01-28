@@ -19,8 +19,6 @@ package com.github.penemue.keap
 
 import org.openjdk.jmh.annotations.*
 import org.openjdk.jmh.infra.Blackhole
-import java.text.DecimalFormat
-import java.text.NumberFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -46,7 +44,6 @@ abstract class RandomBenchmarkBase {
         private const val PRIORITY_QUEUE_SIZE = 10000
         private const val RANDOM_STRING_COUNT = 1000000
         private val randomStrings: Array<String>
-        private val tenDigits = (NumberFormat.getIntegerInstance() as DecimalFormat).apply { applyPattern("0000000000") }
 
         init {
             val r = Random()
