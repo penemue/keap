@@ -102,23 +102,30 @@ environment, run:
                                                                                    
     ./gradlew clean jar jmh
     
-For `java.util.PriorityQueue` and keap-based PriorityQueue, five operations are examined: *heapify* (building the queue
-from a collection), *offer*, *offerDecreasing* (offering successively decreasing elements), *peek*, and *poll*.
-The queue elements are random strings (except for *offerDecreasing* benchmark) of length ~30 characters with constant
-10-characters prefix. Current results are as follows:
-```
-Benchmark                            Mode  Cnt   Score   Error   Units
-BenchmarkJavaQueue.heapify          thrpt   20   1.826 ± 0.018  ops/ms
-BenchmarkJavaQueue.offer            thrpt   20   4.041 ± 0.066  ops/us
-BenchmarkJavaQueue.offerDecreasing  thrpt   20  15.823 ± 0.335  ops/us
-BenchmarkJavaQueue.peek             thrpt   20  72.563 ± 1.242  ops/us
-BenchmarkJavaQueue.poll             thrpt   20   3.882 ± 0.079  ops/us
-BenchmarkKeapQueue.heapify          thrpt   20   3.360 ± 0.042  ops/ms
-BenchmarkKeapQueue.offer            thrpt   20   3.595 ± 0.081  ops/us
-BenchmarkKeapQueue.offerDecreasing  thrpt   20  11.695 ± 0.114  ops/us
-BenchmarkKeapQueue.peek             thrpt   20  71.267 ± 1.263  ops/us
-BenchmarkKeapQueue.poll             thrpt   20  10.913 ± 0.299  ops/us
+For both `java.util.PriorityQueue` and keap-based PriorityQueue, there are two types of benchmarks:
+ 
+ 1. Benchmarks examining operations with random elements: *heapify* (building the queue from a collection), *offer*,
+ *peek*, and *poll*. The queue elements are random strings of length ~30 characters with constant 10-characters prefix.
+ Queue size is 10000. 
+ 1. Benchmarks examining offering ordered elements: *offerIncreasing* (successively increasing elements) and
+ *offerDecreasing* (successively decreasing elements). The queue elements are strings of length ~30
+ characters with constant 10-characters prefix. Queue size is 10000.
 
+Current results are as follows:
+```
+Benchmark                                   Mode  Cnt   Score   Error   Units
+JavaQueueOrderedBenchmark.offerDecreasing  thrpt   20   5.506 ± 0.071  ops/us
+JavaQueueOrderedBenchmark.offerIncreasing  thrpt   20  31.228 ± 0.363  ops/us
+JavaQueueRandomBenchmark.heapify           thrpt   20   1.812 ± 0.041  ops/ms
+JavaQueueRandomBenchmark.offer             thrpt   20   3.652 ± 0.075  ops/us
+JavaQueueRandomBenchmark.peek              thrpt   20  81.031 ± 0.488  ops/us
+JavaQueueRandomBenchmark.poll              thrpt   20   4.267 ± 0.074  ops/us
+KeapQueueOrderedBenchmark.offerDecreasing  thrpt   20   8.318 ± 0.048  ops/us
+KeapQueueOrderedBenchmark.offerIncreasing  thrpt   20   7.539 ± 0.099  ops/us
+KeapQueueRandomBenchmark.heapify           thrpt   20   3.315 ± 0.019  ops/ms
+KeapQueueRandomBenchmark.offer             thrpt   20   3.349 ± 0.077  ops/us
+KeapQueueRandomBenchmark.peek              thrpt   20  82.927 ± 0.484  ops/us
+KeapQueueRandomBenchmark.poll              thrpt   20  11.522 ± 0.264  ops/us
 ```
 The scores above are numbers of operations per microsecond, for *heapify* - per millisecond. So the greater the score,
 the better performance.
