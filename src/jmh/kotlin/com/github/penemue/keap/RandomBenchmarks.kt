@@ -24,14 +24,14 @@ import java.text.NumberFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-open class BenchmarkKeapQueue : BenchmarkBase() {
+open class KeapQueueRandomBenchmark : RandomBenchmarkBase() {
 
     override fun createQueue(c: Collection<String>): Queue<String> {
         return PriorityQueue(c)
     }
 }
 
-open class BenchmarkJavaQueue : BenchmarkBase() {
+open class JavaQueueRandomBenchmark : RandomBenchmarkBase() {
 
     override fun createQueue(c: Collection<String>): Queue<String> {
         return java.util.PriorityQueue(c)
@@ -40,7 +40,7 @@ open class BenchmarkJavaQueue : BenchmarkBase() {
 
 @State(Scope.Thread)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
-abstract class BenchmarkBase {
+abstract class RandomBenchmarkBase {
 
     private companion object {
         private const val PRIORITY_QUEUE_SIZE = 10000
@@ -53,7 +53,7 @@ abstract class BenchmarkBase {
             @Suppress("UNCHECKED_CAST")
             randomStrings = (arrayOfNulls<String>(RANDOM_STRING_COUNT) as Array<String>).apply {
                 repeat(RANDOM_STRING_COUNT, {
-                    this[it] = "aaaaaaaaaa${Math.abs(r.nextLong())}"
+                    this[it] = "0000000000${Math.abs(r.nextLong())}"
                 })
             }
             shuffleStrings()
@@ -66,8 +66,6 @@ abstract class BenchmarkBase {
 
     private var queue: Queue<String>? = null
     private var i = 0
-    private var l = 10000000000L
-    private var decreasingElement = ""
 
     @Setup
     fun setupBenchmark() {
@@ -84,7 +82,6 @@ abstract class BenchmarkBase {
         while (queue!!.size > PRIORITY_QUEUE_SIZE) {
             queue!!.poll()
         }
-        decreasingElement = tenDigits.format(--l)
     }
 
     @Benchmark
@@ -119,14 +116,6 @@ abstract class BenchmarkBase {
     @Fork(4)
     fun offer(bh: Blackhole) {
         bh.consume(offerRandomValue())
-    }
-
-    @Benchmark
-    @Warmup(iterations = 5, time = 1)
-    @Measurement(iterations = 5, time = 1)
-    @Fork(4)
-    fun offerDecreasing(bh: Blackhole) {
-        bh.consume(queue!!.offer(decreasingElement))
     }
 
     private fun offerRandomValue(): Boolean {
