@@ -86,8 +86,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
      *
      * @param  cmp the comparator that will be used to order this priority queue
      */
-    constructor(cmp: Comparator<in T>) : this(MIN_CAPACITY, cmp) {
-    }
+    constructor(cmp: Comparator<in T>) : this(MIN_CAPACITY, cmp)
 
     /**
      * Creates a `PriorityQueue` containing the elements in the specified collection ordered according
@@ -176,7 +175,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
 
     override fun isEmpty() = count == 0
 
-    val capacity: Int get() = queue.size
+    internal val capacity: Int get() = queue.size
 
     /**
      * Removes a single instance of the specified element from this queue, if it is present. More formally,
@@ -375,10 +374,9 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
 
         private const val NIL = -1
         const val MIN_CAPACITY = 4
-        private val powersOf2: IntArray
+        private val powersOf2: IntArray = IntArray(31)
 
         init {
-            powersOf2 = IntArray(31)
             var powerOf2 = 1
             repeat(powersOf2.size, {
                 powersOf2[it] = powerOf2
