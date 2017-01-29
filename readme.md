@@ -1,6 +1,7 @@
 #Keap
 
 [![Build Status](https://travis-ci.org/penemue/keap.png?branch=master)](https://travis-ci.org/penemue/keap)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.penemue/keap/badge.svg)](http://search.maven.org/#search%7Cga%7C1%7Ccom.github.penemue.keap)
 [![Apache License 2.0](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 ![Repository Size](https://reposs.herokuapp.com/?path=penemue/keap)
 [![Pure Kotlin](https://img.shields.io/badge/100%25-kotlin-orange.svg)](https://kotlinlang.org)
@@ -88,12 +89,6 @@ Like Heapsort, Keapsort is not a modern CPU-friendly algorithm since it has poor
     
 Like Heapsort, Keapsort doesn't seem to parallelize well.
 
-##Building from Source
-[Gradle](http://www.gradle.org) is used to build, test, and run benchmarks. JDK 1.8 and [Kotlin](http://kotlinlang.org)
-1.0.6 are required. To build the project, run:
-
-    ./gradlew
-
 ##Benchmarks
 [JMH Gradle Plugin](https://github.com/melix/jmh-gradle-plugin) is used to build and run benchmarks.
 Benchmark results are obtained on a PC running under Windows 7 with Intel(R) Core(TM) i7-3770 3.4 GHz CPU
@@ -129,6 +124,29 @@ KeapQueueRandomBenchmark.poll              thrpt   20  11.522 ± 0.264  ops/us
 ```
 The scores above are numbers of operations per microsecond, for *heapify* - per millisecond. So the greater the score,
 the better performance.
+
+##Download
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.penemue/keap/badge.svg)](http://search.maven.org/#search%7Cga%7C1%7Ccom.github.penemue.keap)
+```xml
+<!-- in Maven project -->
+<dependency>
+    <groupId>com.github.penemue</groupId>
+    <artifactId>keap</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
+```groovy
+// in Gradle project
+dependencies {
+    compile 'com.github.penemue:keap:0.1.0'
+}
+```
+
+##Building from Source
+[Gradle](http://www.gradle.org) is used to build, test, and run benchmarks. JDK 1.8 and [Kotlin](http://kotlinlang.org)
+1.0.6 are required. To build the project, run:
+
+    ./gradlew
 
 ##ToDo
 
