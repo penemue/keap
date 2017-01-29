@@ -1,5 +1,6 @@
 buildscript {
     ext.kotlin_version = '1.0.6'
+    ext.dokkaVersion = '0.9.13'
 
     repositories {
         jcenter()
@@ -9,6 +10,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"
     }
 }
 
@@ -18,9 +20,21 @@ plugins {
 }
 
 group 'com.github.penemue'
-version '0.0.1-SNAPSHOT'
+version = hasProperty('keapVersion') ? project.keapVersion : '0.1.0-SNAPSHOT'
+def isSnapshot = version.endsWith('SNAPSHOT')
+def mavenPublishUrl = hasProperty('mavenPublishUrl') ? project.mavenPublishUrl : ''
+def mavenPublishUsername = hasProperty('mavenPublishUsername') ? project.mavenPublishUsername : ''
+def mavenPublishPassword = hasProperty('mavenPublishPassword') ? project.mavenPublishPassword : ''
+def signingKeyId = hasProperty('signingKeyId') ? project.signingKeyId : ''
+def signingPassword = hasProperty('signingPassword') ? project.signingPassword : ''
+def signingSecretKeyRingFile = hasProperty('signingSecretKeyRingFile') ? project.signingSecretKeyRingFile : ''
 
 apply plugin: 'kotlin'
+apply plugin: 'org.jetbrains.dokka'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+defaultTasks 'clean', 'build'
 
 repositories {
     jcenter()
@@ -57,4 +71,81 @@ license {
     }
 }
 
-defaultTasks 'clean', 'build'
+jar {
+    manifest {
+        attributes 'Implementation-Title': project.name, 'Implementation-Version': version
+    }
+}
+
+task sourceJar(type: Jar) {
+    classifier = 'sources'
+    from project.sourceSets.main.kotlin
+}
+
+task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
+    outputFormat = 'javadoc'
+    outputDirectory = "$buildDir/javadoc"
+}
+
+task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
+    classifier = 'javadoc'
+    from "$buildDir/javadoc"
+}
+
+artifacts {
+    archives jar, javadocJar, sourceJar
+}
+
+if (!isSnapshot) {
+    ext.'signing.keyId' = signingKeyId
+    ext.'signing.password' = signingPassword
+    ext.'signing.secretKeyRingFile' = signingSecretKeyRingFile
+}
+
+afterEvaluate { project ->
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: mavenPublishUrl) {
+                    authentication(userName: mavenPublishUsername, password: mavenPublishPassword)
+                }
+
+                pom.project {
+                    name 'Keap'
+                    description 'Keap is a heap data structure presenting stable PriorityQueue and stable Keapsort sorting algorithm'
+                    packaging 'jar'
+                    url 'https://github.com/penemue/keap'
+
+                    scm {
+                        url 'https://github.com/penemue/keap'
+                        connection 'scm:git:https://github.com/penemue/keap.git'
+                        developerConnection 'scm:git:https://github.com/penemue/keap.git'
+                    }
+
+                    inceptionYear '2016'
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/license/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'penemue'
+                            name 'Vyacheslav Lukianov'
+                        }
+                    }
+                }
+            }
+        }
+    }
+    signing {
+        required { !isSnapshot && gradle.taskGraph.hasTask('uploadArchives') }
+        sign configurations.archives
+    }
+}
