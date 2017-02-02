@@ -106,21 +106,29 @@ For both `java.util.PriorityQueue` and keap-based PriorityQueue, there are two t
  *offerDecreasing* (successively decreasing elements). The queue elements are strings of length ~30
  characters with constant 10-characters prefix. Queue size is 10000.
 
-Current results are as follows:
+Current results grouped for easy review are as follows. Building the queue from collections of random elements: 
+```
+Benchmark                                   Mode  Cnt   Score   Error   Units
+JavaQueueRandomBenchmark.heapify           thrpt   20   1.812 ± 0.041  ops/ms
+KeapQueueRandomBenchmark.heapify           thrpt   20   3.315 ± 0.019  ops/ms
+```
+Basic queue operations with random elements:
+```
+Benchmark                                   Mode  Cnt   Score   Error   Units
+JavaQueueRandomBenchmark.offer             thrpt   20   3.652 ± 0.075  ops/us
+JavaQueueRandomBenchmark.peek              thrpt   20  81.031 ± 0.488  ops/us
+JavaQueueRandomBenchmark.poll              thrpt   20   4.267 ± 0.074  ops/us
+KeapQueueRandomBenchmark.offer             thrpt   20   3.349 ± 0.077  ops/us
+KeapQueueRandomBenchmark.peek              thrpt   20  82.927 ± 0.484  ops/us
+KeapQueueRandomBenchmark.poll              thrpt   20  11.522 ± 0.264  ops/us
+```
+Offering ordered elements:
 ```
 Benchmark                                   Mode  Cnt   Score   Error   Units
 JavaQueueOrderedBenchmark.offerDecreasing  thrpt   20   5.506 ± 0.071  ops/us
 JavaQueueOrderedBenchmark.offerIncreasing  thrpt   20  31.228 ± 0.363  ops/us
-JavaQueueRandomBenchmark.heapify           thrpt   20   1.812 ± 0.041  ops/ms
-JavaQueueRandomBenchmark.offer             thrpt   20   3.652 ± 0.075  ops/us
-JavaQueueRandomBenchmark.peek              thrpt   20  81.031 ± 0.488  ops/us
-JavaQueueRandomBenchmark.poll              thrpt   20   4.267 ± 0.074  ops/us
 KeapQueueOrderedBenchmark.offerDecreasing  thrpt   20   8.318 ± 0.048  ops/us
 KeapQueueOrderedBenchmark.offerIncreasing  thrpt   20   7.539 ± 0.099  ops/us
-KeapQueueRandomBenchmark.heapify           thrpt   20   3.315 ± 0.019  ops/ms
-KeapQueueRandomBenchmark.offer             thrpt   20   3.349 ± 0.077  ops/us
-KeapQueueRandomBenchmark.peek              thrpt   20  82.927 ± 0.484  ops/us
-KeapQueueRandomBenchmark.poll              thrpt   20  11.522 ± 0.264  ops/us
 ```
 The scores above are numbers of operations per microsecond, for *heapify* - per millisecond. So the greater the score,
 the better performance.
