@@ -1,4 +1,4 @@
-#Keap
+# Keap
 
 [![Build Status](https://travis-ci.org/penemue/keap.png?branch=master)](https://travis-ci.org/penemue/keap)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.penemue/keap/badge.svg)](http://search.maven.org/#search%7Cga%7C1%7Ccom.github.penemue.keap)
@@ -70,10 +70,10 @@ sorting algorithm. Both might be useful in two cases:
 1. stability is a must;
 1. comparing elements is rather heavyweight operation (e.g., it requires a database access).
 
-##PriorityQueue
+## PriorityQueue
 PriorityQueue is a keap-based stable replacement of `java.util.PriorityQueue`. 
 
-##Keapsort
+## Keapsort
 Keapsort is a [Heapsort](https://en.wikipedia.org/wiki/Heapsort) with keap used instead of binary heap. Keapsort is a
 comparison-based sorting algorithm with a worst-case [O](https://en.wikipedia.org/wiki/Big_O_notation)(*n* log *n*)
 runtime. As keap is a stable priority queue, Keapsort is stable. Unlike Heapsort, Keapsort doesn't have an in-place
@@ -89,7 +89,8 @@ Like Heapsort, Keapsort is not a modern CPU-friendly algorithm since it has poor
     
 Like Heapsort, Keapsort doesn't seem to parallelize well.
 
-##Benchmarks
+
+## Benchmarks
 [JMH Gradle Plugin](https://github.com/melix/jmh-gradle-plugin) is used to build and run benchmarks.
 Benchmark results are obtained on a PC running under Windows 7 with Intel(R) Core(TM) i7-3770 3.4 GHz CPU
 and 64-bit JRE build 1.8.0_112-b15 with the following java parameters: `-Xms1g -Xmx1g`. To get results in your
@@ -133,7 +134,7 @@ KeapQueueOrderedBenchmark.offerIncreasing  thrpt   20   7.539 ± 0.099  ops/us
 The scores above are numbers of operations per microsecond, for *heapify* - per millisecond. So the greater the score,
 the better performance.
 
-##Download
+## Download
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.penemue/keap/badge.svg)](http://search.maven.org/#search%7Cga%7C1%7Ccom.github.penemue.keap)
 ```xml
 <!-- in Maven project -->
@@ -150,13 +151,13 @@ dependencies {
 }
 ```
 
-##Building from Source
+## Building from Source
 [Gradle](http://www.gradle.org) is used to build, test, and run benchmarks. JDK 1.8 and [Kotlin](http://kotlinlang.org)
 1.0.6 are required. To build the project, run:
 
     ./gradlew
 
-##ToDo
+## ToDo
 
 - <span id="todo">On increasing capacity, get rid of *heapify*, thus reducing number of comparisons on *offer*.</span>
  
