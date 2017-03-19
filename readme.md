@@ -153,7 +153,7 @@ dependencies {
 
 ## Building from Source
 [Gradle](http://www.gradle.org) is used to build, test, and run benchmarks. JDK 1.8 and [Kotlin](http://kotlinlang.org)
-1.0.6 are required. To build the project, run:
+1.1.1 are required. To build the project, run:
 
     ./gradlew
 
