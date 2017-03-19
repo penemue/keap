@@ -36,6 +36,10 @@ apply plugin: 'signing'
 
 defaultTasks 'clean', 'build'
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.3'
+}
+
 repositories {
     jcenter()
 }
