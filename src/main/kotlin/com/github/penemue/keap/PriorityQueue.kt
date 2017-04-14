@@ -374,15 +374,6 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
 
         private const val NIL = -1
         const val MIN_CAPACITY = 4
-        private val powersOf2: IntArray = IntArray(31)
-
-        init {
-            var powerOf2 = 1
-            repeat(powersOf2.size, {
-                powersOf2[it] = powerOf2
-                powerOf2 *= 2
-            })
-        }
 
         private val Int.toCapacity: Int
             get() {
@@ -390,8 +381,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
                     throw IllegalArgumentException()
                 }
                 // capacity if always a power of 2
-                val i = powersOf2.binarySearch(this)
-                val result = if (i < 0) powersOf2[-i - 1] else powersOf2[i]
+                val result = 2 * Integer.highestOneBit(this - 1)
                 return if (result < MIN_CAPACITY) MIN_CAPACITY else result
             }
 
