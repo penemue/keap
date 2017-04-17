@@ -381,7 +381,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
                     throw IllegalArgumentException()
                 }
                 // capacity if always a power of 2
-                val result = 2 * Integer.highestOneBit(this - 1)
+                val result = Integer.highestOneBit(2 * this - 1)
                 return if (result < MIN_CAPACITY) MIN_CAPACITY else result
             }
 
