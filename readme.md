@@ -141,13 +141,13 @@ the better performance.
 <dependency>
     <groupId>com.github.penemue</groupId>
     <artifactId>keap</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 </dependency>
 ```
 ```groovy
 // in Gradle project
 dependencies {
-    compile 'com.github.penemue:keap:0.1.0'
+    compile 'com.github.penemue:keap:0.1.1'
 }
 ```
 
