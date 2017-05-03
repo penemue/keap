@@ -18,11 +18,11 @@ package com.github.penemue.keap
 import java.util.*
 
 /**
- * For a [collection][Collection], returns [iterable][Iterable] of elements sorted according to their
+ * For an [iterable][Iterable], returns [iterable][Iterable] of elements sorted according to their
  * [natural ordering][Comparable] or by the specified [comparator][cmp].
- * The first (the least) item is returned after `this.size - 1` comparisons.
+ * If `size` is the size of this, then the first (the least) item is returned after `size - 1` comparisons.
  */
-inline fun <reified T> Collection<T>.keapSorted(cmp: Comparator<in T>? = null): Iterable<T> {
+inline fun <reified T> Iterable<T>.keapSorted(cmp: Comparator<in T>? = null): Iterable<T> {
     return SortedIterable(this, cmp)
 }
 

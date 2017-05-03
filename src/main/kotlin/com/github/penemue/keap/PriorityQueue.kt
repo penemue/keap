@@ -21,10 +21,17 @@ import java.io.Serializable
 import java.util.*
 
 /**
- * Extension function creating the priority queue from a [collection][Collection] with optionally specified
+ * Extension function creating the priority queue from an [iterable][Iterable] with optionally specified
  * [comparator][Comparator].
  */
-fun <T> Collection<T>.keapify(cmp: Comparator<in T>? = null) = PriorityQueue(this, cmp)
+fun <T> Iterable<T>.keapify(cmp: Comparator<in T>? = null): PriorityQueue<T> {
+    if (this is Collection) {
+        return PriorityQueue(this, cmp)
+    }
+    val result = PriorityQueue<T>()
+    forEach { result.offer(it) }
+    return result
+}
 
 /**
  * Extension function creating the copy of this priority queue.
