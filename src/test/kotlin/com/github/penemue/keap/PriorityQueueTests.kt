@@ -91,7 +91,7 @@ class PriorityQueueTests {
     fun testConstructor5() {
         try {
             val ints = arrayOfNulls<Int>(SIZE)
-            for (i in 0..SIZE - 1 - 1) {
+            for (i in 0 until SIZE - 1) {
                 ints[i] = i
             }
             PriorityQueue(Arrays.asList<Int>(*ints))
@@ -107,11 +107,11 @@ class PriorityQueueTests {
     @Test
     fun testConstructor6() {
         val ints = arrayOfNulls<Int>(SIZE)
-        for (i in 0..SIZE - 1) {
+        for (i in 0 until SIZE) {
             ints[i] = i
         }
         val q = PriorityQueue(Arrays.asList<Int>(*ints))
-        for (i in 0..SIZE - 1) {
+        for (i in 0 until SIZE) {
             assertEquals(ints[i], q.poll())
         }
     }
@@ -125,7 +125,7 @@ class PriorityQueueTests {
         val q = PriorityQueue(SIZE, cmp)
         assertEquals(cmp, q.comparator())
         val ints = arrayOfNulls<Int>(SIZE)
-        for (i in 0..SIZE - 1) {
+        for (i in 0 until SIZE) {
             ints[i] = i
         }
         q.addAll(Arrays.asList<Int>(*ints))
@@ -155,11 +155,11 @@ class PriorityQueueTests {
     @Test
     fun testSize() {
         val q = populatedQueue(SIZE)
-        for (i in 0..SIZE - 1) {
+        for (i in 0 until SIZE) {
             assertEquals(SIZE - i, q.size)
             q.remove()
         }
-        for (i in 0..SIZE - 1) {
+        for (i in 0 until SIZE) {
             assertEquals(i, q.size)
             q.add(i)
         }
@@ -196,7 +196,7 @@ class PriorityQueueTests {
     @Test
     fun testAdd() {
         val q = PriorityQueue<Int>(SIZE)
-        for (i in 0..SIZE - 1) {
+        for (i in 0 until SIZE) {
             assertEquals(i, q.size)
             assertTrue(q.add(i))
         }
@@ -225,7 +225,7 @@ class PriorityQueueTests {
         try {
             val q = PriorityQueue<Int>(SIZE)
             val ints = arrayOfNulls<Int>(SIZE)
-            for (i in 0..SIZE - 1 - 1)
+            for (i in 0 until SIZE - 1)
                 ints[i] = i
             q.addAll(Arrays.asList<Int>(*ints))
             shouldThrow()
@@ -240,13 +240,13 @@ class PriorityQueueTests {
     fun testAddAll5() {
         val empty = arrayOfNulls<Int>(0)
         val ints = arrayOfNulls<Int>(SIZE)
-        for (i in 0..SIZE - 1) {
+        for (i in 0 until SIZE) {
             ints[i] = SIZE - 1 - i
         }
         val q = PriorityQueue<Int>(SIZE)
         assertFalse(q.addAll(Arrays.asList<Int>(*empty)))
         assertTrue(q.addAll(Arrays.asList<Int>(*ints)))
-        for (i in 0..SIZE - 1) {
+        for (i in 0 until SIZE) {
             assertEquals(i, q.poll())
         }
     }
@@ -257,7 +257,7 @@ class PriorityQueueTests {
     @Test
     fun testPoll() {
         val q = populatedQueue(SIZE)
-        for (i in 0..SIZE - 1) {
+        for (i in 0 until SIZE) {
             assertEquals(i, (q.poll() as Int).toInt())
         }
         assertNull(q.poll())
@@ -269,7 +269,7 @@ class PriorityQueueTests {
     @Test
     fun testPeek() {
         val q = populatedQueue(SIZE)
-        for (i in 0..SIZE - 1) {
+        for (i in 0 until SIZE) {
             assertEquals(i, (q.peek() as Int).toInt())
             q.poll()
             assertTrue(q.peek() == null || i != (q.peek() as Int).toInt())
@@ -283,7 +283,7 @@ class PriorityQueueTests {
     @Test
     fun testElement() {
         val q = populatedQueue(SIZE)
-        for (i in 0..SIZE - 1) {
+        for (i in 0 until SIZE) {
             assertEquals(i, (q.element() as Int).toInt())
             q.poll()
         }
@@ -300,7 +300,7 @@ class PriorityQueueTests {
     @Test
     fun testRemove() {
         val q = populatedQueue(SIZE)
-        for (i in 0..SIZE - 1) {
+        for (i in 0 until SIZE) {
             assertEquals(i, (q.remove() as Int).toInt())
         }
         try {
@@ -338,7 +338,7 @@ class PriorityQueueTests {
     @Test
     fun testContains() {
         val q = populatedQueue(SIZE)
-        for (i in 0..SIZE - 1) {
+        for (i in 0 until SIZE) {
             assertTrue(q.contains(i))
             q.poll()
             assertFalse(q.contains(i))
@@ -367,7 +367,7 @@ class PriorityQueueTests {
     fun testContainsAll() {
         val q = populatedQueue(SIZE)
         val p = PriorityQueue<Int>(SIZE)
-        for (i in 0..SIZE - 1) {
+        for (i in 0 until SIZE) {
             assertTrue(q.containsAll(p))
             assertFalse(p.containsAll(q))
             p.add(i)
@@ -382,7 +382,7 @@ class PriorityQueueTests {
     fun testRetainAll() {
         val q = populatedQueue(SIZE)
         val p = populatedQueue(SIZE)
-        for (i in 0..SIZE - 1) {
+        for (i in 0 until SIZE) {
             val changed = q.retainAll(p)
             if (i == 0) {
                 assertFalse(changed)
@@ -400,12 +400,12 @@ class PriorityQueueTests {
      */
     @Test
     fun testRemoveAll() {
-        for (i in 1..SIZE - 1) {
+        for (i in 1 until SIZE) {
             val q = populatedQueue(SIZE)
             val p = populatedQueue(i)
             assertTrue(q.removeAll(p))
             assertEquals(SIZE - i, q.size)
-            for (j in 0..i - 1) {
+            for (j in 0 until i) {
                 assertFalse(q.contains(p.remove()))
             }
         }
@@ -431,7 +431,7 @@ class PriorityQueueTests {
         val q = populatedQueue(SIZE)
         @Suppress("VARIABLE_WITH_REDUNDANT_INITIALIZER")
         var ints = arrayOfNulls<Int>(SIZE)
-        ints = q.toTypedArray() as Array<Int?>
+        ints = q.toTypedArray()
         Arrays.sort(ints)
         for (i in ints.indices)
             assertEquals(ints[i], q.poll())
@@ -480,7 +480,7 @@ class PriorityQueueTests {
     fun testToString() {
         val q = populatedQueue(SIZE)
         val s = q.toString()
-        for (i in 0..SIZE - 1) {
+        for (i in 0 until SIZE) {
             assertTrue(s.indexOf(i.toString()) >= 0)
         }
     }
