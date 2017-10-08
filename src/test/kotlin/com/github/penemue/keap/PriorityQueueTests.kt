@@ -310,6 +310,20 @@ class PriorityQueueTests {
         }
     }
 
+    @Test
+    fun testRemove2() {
+        val q = populatedQueue(SIZE)
+        for (i in SIZE - 1 downTo 0) {
+            assertTrue(q.remove(i))
+            assertEquals(i, q.size)
+        }
+        try {
+            q.remove()
+            shouldThrow()
+        } catch (success: NoSuchElementException) {
+        }
+    }
+
     /**
      * remove(x) removes x and returns true if present
      */
