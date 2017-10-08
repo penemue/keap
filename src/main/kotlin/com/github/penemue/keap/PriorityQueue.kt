@@ -83,7 +83,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
     @Transient
     private var queue: Array<T?> = arrayOfNulls<Any>(capacity.toCapacity) as Array<T?>
     @Transient
-    private var heap = IntArray(queue.size - 1)
+    private var heap = IntArray(queue.size / 2 - 1)
     @Transient
     private var heapSize = heap.size
 
@@ -141,7 +141,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
      * Retrieves and removes the least element if any exists without [compaction][compactIfNecessary] of this queue.
      * Is used in [keapSort] in order to avoid unnecessary comparisons being performed during compaction.
      */
-    fun pollRaw(): T? = if (isEmpty()) null else removeAt(heap[0])
+    fun pollRaw(): T? = if (isEmpty()) null else removeAtEven(heap[0])
 
     /**
      * Inserts the specified element into this priority queue.
@@ -153,7 +153,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
      */
     override fun offer(e: T): Boolean {
         val element = e ?: throw NullPointerException()
-        val i = nextFree
+        var i = nextFree
         if (i == queue.size) {
             val oldQueue = queue
             // do not allocate new array for the queue if there is enough free space (not less than ~25%)
@@ -169,10 +169,18 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
                 oldQueue.fill(null, j, i)
             }
             heapify()
+            i = nextFree
         }
-        queue[nextFree] = element
-        siftUp(nextFree)
-        ++nextFree
+        queue[i] = element
+        // sift up only elements with even indices in the queue.
+        if (i.isEven) {
+            siftUp(i)
+        } else {
+            if (min(i - 1, i) == i) {
+                siftUp(swapNeighboursAt(i - 1))
+            }
+        }
+        nextFree = i + 1
         ++count
         ++modCount
         return true
@@ -225,7 +233,11 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
 
             override fun remove() {
                 checkUnmodified()
-                removeAt(cursor)
+                val i = cursor
+                removeAt(i)
+                if (i.isEven) {
+                    --cursor
+                }
                 expectedModCount = modCount
             }
 
@@ -256,20 +268,25 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
     private fun heapify() {
         heap.fill(NIL)
         var i = heapSize
-        if (i > 0) {
+        for (j in i / 2 until i) {
+            val minLeft = queueLeftChild(j)
+            if (min(minLeft, minLeft + 1) == minLeft + 1) {
+                swapNeighboursAt(minLeft)
+            }
+            val minRight = queueRightChild(j)
+            if (min(minRight, minRight + 1) == minRight + 1) {
+                swapNeighboursAt(minRight)
+            }
+            val min = min(minLeft, minRight)
+            if (min == NIL) break
+            heap[j] = min
+        }
+        while (i > 1) {
             i /= 2
-            for (j in i..i * 2) {
-                val min = min(queueLeftChild(j), queueRightChild(j))
+            for (j in i / 2 until i) {
+                val min = min(heap[j.leftChild], heap[j.rightChild])
                 if (min == NIL) break
                 heap[j] = min
-            }
-            while (i > 0) {
-                i /= 2
-                for (j in i..i * 2) {
-                    val min = min(heap[j.leftChild], heap[j.rightChild])
-                    if (min == NIL) break
-                    heap[j] = min
-                }
             }
         }
     }
@@ -297,7 +314,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
     }
 
     private fun compactIfNecessary() {
-        if (count < queue.size / 3 && count > 0) {
+        if (count > 0 && count < queue.size / 3) {
             val oldQueue = queue
             allocHeap(count)
             var j = 0
@@ -308,16 +325,41 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
     }
 
     private fun removeAt(i: Int): T? {
+        if (i.isEven) return removeAtEven(i)
         val result = queue[i]
         return result?.apply {
             queue[i] = null
-            siftUpToRoot(i)
             if (i == nextFree - 1) {
                 --nextFree
             }
             --count
             ++modCount
         }
+    }
+
+    // remove element at even index
+    private fun removeAtEven(i: Int): T? {
+        val result = queue[i]
+        return result?.apply {
+            queue[i] = queue[i + 1]
+            queue[i + 1] = null
+            siftUpToRoot(i)
+            if (i == nextFree - 1) {
+                var j = i
+                while (j > 0 && queue[j - 1] == null) --j
+                nextFree = j
+            }
+            --count
+            ++modCount
+        }
+    }
+
+    // even index is expected
+    private fun swapNeighboursAt(i: Int): Int {
+        val temp = queue[i]
+        queue[i] = queue[i + 1]
+        queue[i + 1] = temp
+        return i
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -328,15 +370,15 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
             throw IllegalArgumentException("Allocating keap of the same size as existing")
         }
         queue = arrayOfNulls<Any?>(adjustedCapacity) as Array<T?>
-        heap = IntArray(queue.size - 1)
+        heap = IntArray(queue.size / 2 - 1)
         heapSize = heap.size
     }
 
-    private fun queueLeftChild(parent: Int) = parent.leftChild - heapSize
+    private fun queueLeftChild(parent: Int) = (parent.leftChild - heapSize) * 2
 
-    private fun queueRightChild(parent: Int) = parent.rightChild - heapSize
+    private fun queueRightChild(parent: Int) = (parent.rightChild - heapSize) * 2
 
-    private fun queueParent(child: Int) = (child + heapSize).parent
+    private fun queueParent(child: Int) = (child / 2 + heapSize).parent
 
     private fun min(i1: Int, i2: Int): Int {
         if (i2 == NIL) return i1
@@ -397,6 +439,8 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
         private val Int.rightChild: Int get() = this * 2 + 2
 
         private val Int.parent: Int get() = (this - 1) / 2
+
+        private val Int.isEven: Boolean get() = this.and(1) == 0
 
         private infix fun <E> Array<E>.copyFrom(src: Array<E>) = System.arraycopy(src, 0, this, 0, src.size)
 
