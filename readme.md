@@ -14,11 +14,11 @@ Keap is stable, that is, it keeps initial order of equal elements.
 
 It's faster than binary heap in terms of number of comparisons. For any kind of input (random or ordered) of size `n`,
 the *heapify* procedure requires exactly `n - 1` comparisons. Binary heap reaches this number of comparisons
-only for ordered input. For random input, keap compared to binary heap does approximately 90% less comparisons
-to *heapify*, 20% more comparisons to *offer*<sup><a href="#todo">[todo]</a></sup>, and more than 3 times less
-comparisons to *poll*. Though, array-backed keap consumes 2-3 times more memory than array-backed binary heap.
+only for ordered input. For random input, keap compared to binary heap does approximately 1.9 times less comparisons
+to *heapify*, 2.7 times less comparisons to *offer*, and 3.5 times less comparisons to *poll*.
+Though, array-backed keap on the average consumes 1.5 times more memory than array-backed binary heap.
 
-Performance summary of keap and binary heap (both array-backed) is as follows: 
+Performance summary of keap and binary heap (both array-backed) is as follows:
 <table>
 <tr>
 <th></th>
@@ -71,7 +71,7 @@ sorting algorithm. Both might be useful in two cases:
 1. comparing elements is rather heavyweight operation (e.g., it requires a database access).
 
 ## PriorityQueue
-PriorityQueue is a keap-based stable replacement of `java.util.PriorityQueue`. 
+PriorityQueue is a keap-based stable replacement of `java.util.PriorityQueue`.
 
 ## Keapsort
 Keapsort is a [Heapsort](https://en.wikipedia.org/wiki/Heapsort) with keap used instead of binary heap. Keapsort is a
@@ -86,7 +86,7 @@ two times less comparisons than Heapsort, nearly 1% less comparisons than
 [Timsort](https://en.wikipedia.org/wiki/Timsort).
 
 Like Heapsort, Keapsort is not a modern CPU-friendly algorithm since it has poor data cache performance.
-    
+
 Like Heapsort, Keapsort doesn't seem to parallelize well.
 
 
@@ -95,41 +95,41 @@ Like Heapsort, Keapsort doesn't seem to parallelize well.
 Benchmark results are obtained on a PC running under Windows 7 with Intel(R) Core(TM) i7-3770 3.4 GHz CPU
 and 64-bit JRE build 1.8.0_112-b15 with the following java parameters: `-Xms1g -Xmx1g`. To get results in your
 environment, run:
-                                                                                   
+
     ./gradlew clean jar jmh
-    
+
 For both `java.util.PriorityQueue` and keap-based PriorityQueue, there are two types of benchmarks:
- 
+
  1. Benchmarks examining operations with random elements: *heapify* (building the queue from a collection), *offer*,
  *peek*, and *poll*. The queue elements are random strings of length ~30 characters with constant 10-characters prefix.
- Queue size is 10000. 
+ Queue size is 10000.
  1. Benchmarks examining offering ordered elements: *offerIncreasing* (successively increasing elements) and
  *offerDecreasing* (successively decreasing elements). The queue elements are strings of length ~30
  characters with constant 10-characters prefix. Queue size is 10000.
 
-Current results grouped for easy review are as follows. Building the queue from collections of random elements: 
+Current results grouped for easy review are as follows. Building the queue from collections of random elements:
 ```
 Benchmark                                   Mode  Cnt   Score   Error   Units
-JavaQueueRandomBenchmark.heapify           thrpt   20   1.812 ± 0.041  ops/ms
-KeapQueueRandomBenchmark.heapify           thrpt   20   3.315 ± 0.019  ops/ms
+JavaQueueRandomBenchmark.heapify           thrpt   20   1.827 ± 0.031  ops/ms
+KeapQueueRandomBenchmark.heapify           thrpt   20   3.498 ± 0.017  ops/ms
 ```
 Basic queue operations with random elements:
 ```
 Benchmark                                   Mode  Cnt   Score   Error   Units
-JavaQueueRandomBenchmark.offer             thrpt   20   3.652 ± 0.075  ops/us
-JavaQueueRandomBenchmark.peek              thrpt   20  81.031 ± 0.488  ops/us
-JavaQueueRandomBenchmark.poll              thrpt   20   4.267 ± 0.074  ops/us
-KeapQueueRandomBenchmark.offer             thrpt   20   3.349 ± 0.077  ops/us
-KeapQueueRandomBenchmark.peek              thrpt   20  82.927 ± 0.484  ops/us
-KeapQueueRandomBenchmark.poll              thrpt   20  11.522 ± 0.264  ops/us
+JavaQueueRandomBenchmark.offer             thrpt   20   3.728 ± 0.038  ops/us
+JavaQueueRandomBenchmark.peek              thrpt   20  80.269 ± 0.713  ops/us
+JavaQueueRandomBenchmark.poll              thrpt   20   4.273 ± 0.088  ops/us
+KeapQueueRandomBenchmark.offer             thrpt   20   4.083 ± 0.039  ops/us
+KeapQueueRandomBenchmark.peek              thrpt   20  84.329 ± 0.572  ops/us
+KeapQueueRandomBenchmark.poll              thrpt   20  11.019 ± 0.475  ops/us
 ```
 Offering ordered elements:
 ```
 Benchmark                                   Mode  Cnt   Score   Error   Units
-JavaQueueOrderedBenchmark.offerDecreasing  thrpt   20   5.506 ± 0.071  ops/us
-JavaQueueOrderedBenchmark.offerIncreasing  thrpt   20  31.228 ± 0.363  ops/us
-KeapQueueOrderedBenchmark.offerDecreasing  thrpt   20   8.318 ± 0.048  ops/us
-KeapQueueOrderedBenchmark.offerIncreasing  thrpt   20   7.539 ± 0.099  ops/us
+JavaQueueOrderedBenchmark.offerDecreasing  thrpt   20   5.458 ± 0.075  ops/us
+JavaQueueOrderedBenchmark.offerIncreasing  thrpt   20  30.762 ± 0.527  ops/us
+KeapQueueOrderedBenchmark.offerDecreasing  thrpt   20   8.177 ± 0.121  ops/us
+KeapQueueOrderedBenchmark.offerIncreasing  thrpt   20   8.467 ± 0.217  ops/us
 ```
 The scores above are numbers of operations per microsecond, for *heapify* - per millisecond. So the greater the score,
 the better performance.
@@ -141,27 +141,25 @@ the better performance.
 <dependency>
     <groupId>com.github.penemue</groupId>
     <artifactId>keap</artifactId>
-    <version>0.1.1</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 ```groovy
 // in Gradle project
 dependencies {
-    compile 'com.github.penemue:keap:0.1.1'
+    compile 'com.github.penemue:keap:0.2.0'
 }
 ```
 
 ## Building from Source
 [Gradle](http://www.gradle.org) is used to build, test, and run benchmarks. JDK 1.8 and [Kotlin](http://kotlinlang.org)
-1.1.1 are required. To build the project, run:
+1.1.51 are required. To build the project, run:
 
     ./gradlew
 
 ## ToDo
 
-- <span id="todo">On increasing capacity, get rid of *heapify*, thus reducing number of comparisons on *offer*.</span>
- 
-- Compare Keapsort to [Quicksort](https://en.wikipedia.org/wiki/Quicksort). 
+- Compare Keapsort to [Quicksort](https://en.wikipedia.org/wiki/Quicksort).
 
 - Looks like a tree-backed version of keap could be exposed as an immutable/persistent/lock-free heap data structure.
 In addition, it could support heap merge operation in
