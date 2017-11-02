@@ -32,6 +32,15 @@ inline fun <reified T> Collection<T>.jvmSort(cmp: Comparator<in T>): Array<T> {
     return toTypedArray().apply { Arrays.sort(this, cmp) }
 }
 
+inline fun <reified T> Iterable<T>.keapSortIterable(cmp: Comparator<in T>): Array<T> {
+    val heap = PriorityQueue(4, cmp)
+    forEach { heap.offer(it) }
+    val result = arrayOfNulls<T>(heap.size)
+    repeat(heap.size, { result[it] = heap.poll() })
+    @Suppress("UNCHECKED_CAST")
+    return result as Array<T>
+}
+
 class SortsTest {
 
     @Test
@@ -41,6 +50,15 @@ class SortsTest {
         testSort("keapSort", 100000, { collection, cmp -> collection.keapSort(cmp) })
         testSort("keapSort", 1000000, { collection, cmp -> collection.keapSort(cmp) })
         testSort("keapSort", 2000000, { collection, cmp -> collection.keapSort(cmp) })
+    }
+
+    @Test
+    fun keapSortRandomStrings2() {
+        testSort("keapSortIterable", 1000, { collection, cmp -> collection.keapSortIterable(cmp) })
+        testSort("keapSortIterable", 10000, { collection, cmp -> collection.keapSortIterable(cmp) })
+        testSort("keapSortIterable", 100000, { collection, cmp -> collection.keapSortIterable(cmp) })
+        testSort("keapSortIterable", 1000000, { collection, cmp -> collection.keapSortIterable(cmp) })
+        testSort("keapSortIterable", 2000000, { collection, cmp -> collection.keapSortIterable(cmp) })
     }
 
     @Test

@@ -296,19 +296,6 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
         heap[i] = min(queueLeftChild(i), queueRightChild(i))
         while (i > 0) {
             i = i.parent
-            val min = min(heap[i.leftChild], heap[i.rightChild])
-            if (heap[i] == min) {
-                break
-            }
-            heap[i] = min
-        }
-    }
-
-    private fun siftUpToRoot(index: Int) {
-        var i = queueParent(index)
-        heap[i] = min(queueLeftChild(i), queueRightChild(i))
-        while (i > 0) {
-            i = i.parent
             heap[i] = min(heap[i.leftChild], heap[i.rightChild])
         }
     }
@@ -343,7 +330,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
         return result?.apply {
             queue[i] = queue[i + 1]
             queue[i + 1] = null
-            siftUpToRoot(i)
+            siftUp(i)
             if (i == nextFree - 1) {
                 var j = i
                 while (j > 0 && queue[j - 1] == null) --j
