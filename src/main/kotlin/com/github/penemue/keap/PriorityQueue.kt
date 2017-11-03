@@ -151,34 +151,38 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
      * priority queue according to the priority queue's ordering
      * @throws NullPointerException if the specified element is `null`
      */
-    override fun offer(e: T): Boolean {
-        val element = e ?: throw NullPointerException()
-        var i = nextFree
-        if (i == queue.size) {
-            val oldQueue = queue
+    override fun offer(e: T?): Boolean {
+        e ?: throw NullPointerException()
+        val i = nextFree
+        if (i.isOdd) {
+            val neighbour = queue[i - 1] ?: throw NullPointerException()
+            if (compareValues(e, neighbour) >= 0) {
+                queue[i] = e
+            } else {
+                queue[i - 1] = e
+                queue[i] = neighbour
+                siftUp(i - 1)
+            }
+        } else if (i == queue.size) {
+            val q = queue
             // do not allocate new array for the queue if there is enough free space (not less than ~25%)
             val newCapacity = Math.max(i, ((count + 1) * 4 / 3).toCapacity)
             if (newCapacity > i) {
                 allocHeap(newCapacity)
             }
             var j = 0
-            oldQueue.forEach { it?.apply { queue[j++] = it } }
+            if (q != queue) {
+                q.forEach { it?.apply { queue[j++] = this } }
+            } else {
+                q.forEach { it?.apply { q[j++] = this } }
+                q.fill(null, j, i)
+            }
             nextFree = j
-            // if new array wasn't allocated pad the tail of the queue with nulls
-            if (oldQueue === queue) {
-                oldQueue.fill(null, j, i)
-            }
             heapify()
-            i = nextFree
-        }
-        queue[i] = element
-        // sift up only elements with even indices in the queue.
-        if (i.isEven) {
-            siftUp(i)
+            return offer(e)
         } else {
-            if (min(i - 1, i) == i) {
-                siftUp(swapNeighboursAt(i - 1))
-            }
+            queue[i] = e
+            siftUp(i)
         }
         nextFree = i + 1
         ++count
@@ -377,9 +381,12 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
         if (value2 == null) return i1
         if (value1 == null) return i2
 
-        @Suppress("UNCHECKED_CAST")
-        return if (cmp?.compare(value1, value2) ?: (value1 as Comparable<T>).compareTo(value2) <= 0) i1 else i2
+        return if (compareValues(value1, value2) <= 0) i1 else i2
     }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun compareValues(value1: T, value2: T) =
+            cmp?.compare(value1, value2) ?: (value1 as Comparable<T>).compareTo(value2)
 
     private fun writeObject(output: ObjectOutputStream) {
         // write out element count
@@ -426,6 +433,8 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
         private val Int.rightChild: Int get() = this * 2 + 2
 
         private val Int.parent: Int get() = (this - 1) / 2
+
+        private val Int.isOdd: Boolean get() = this.and(1) == 1
 
         private val Int.isEven: Boolean get() = this.and(1) == 0
 
