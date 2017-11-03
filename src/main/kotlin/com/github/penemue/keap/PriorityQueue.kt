@@ -300,7 +300,12 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
         heap[i] = min(queueLeftChild(i), queueRightChild(i))
         while (i > 0) {
             i = i.parent
-            heap[i] = min(heap[i.leftChild], heap[i.rightChild])
+            val min = min(heap[i.leftChild], heap[i.rightChild])
+            if (min == heap[i]) {
+                if (min == index) continue
+                break
+            }
+            heap[i] = min
         }
     }
 
