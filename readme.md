@@ -110,26 +110,26 @@ For both `java.util.PriorityQueue` and keap-based PriorityQueue, there are two t
 Current results grouped for easy review are as follows. Building the queue from collections of random elements:
 ```
 Benchmark                                   Mode  Cnt   Score   Error   Units
-JavaQueueRandomBenchmark.heapify           thrpt   20   1.827 ± 0.031  ops/ms
-KeapQueueRandomBenchmark.heapify           thrpt   20   3.498 ± 0.017  ops/ms
+JavaQueueRandomBenchmark.heapify           thrpt   20   1.810 ± 0.039  ops/ms
+KeapQueueRandomBenchmark.heapify           thrpt   20   3.487 ± 0.013  ops/ms
 ```
 Basic queue operations with random elements:
 ```
 Benchmark                                   Mode  Cnt   Score   Error   Units
-JavaQueueRandomBenchmark.offer             thrpt   20   3.728 ± 0.038  ops/us
-JavaQueueRandomBenchmark.peek              thrpt   20  80.269 ± 0.713  ops/us
-JavaQueueRandomBenchmark.poll              thrpt   20   4.273 ± 0.088  ops/us
-KeapQueueRandomBenchmark.offer             thrpt   20   4.083 ± 0.039  ops/us
-KeapQueueRandomBenchmark.peek              thrpt   20  84.329 ± 0.572  ops/us
-KeapQueueRandomBenchmark.poll              thrpt   20  11.019 ± 0.475  ops/us
+JavaQueueRandomBenchmark.offer             thrpt   20   3.649 ± 0.041  ops/us
+JavaQueueRandomBenchmark.peek              thrpt   20  79.458 ± 0.626  ops/us
+JavaQueueRandomBenchmark.poll              thrpt   20   4.250 ± 0.070  ops/us
+KeapQueueRandomBenchmark.offer             thrpt   20   3.727 ± 0.073  ops/us
+KeapQueueRandomBenchmark.peek              thrpt   20  84.371 ± 0.499  ops/us
+KeapQueueRandomBenchmark.poll              thrpt   20  11.993 ± 0.239  ops/us
 ```
 Offering ordered elements:
 ```
 Benchmark                                   Mode  Cnt   Score   Error   Units
-JavaQueueOrderedBenchmark.offerDecreasing  thrpt   20   5.458 ± 0.075  ops/us
-JavaQueueOrderedBenchmark.offerIncreasing  thrpt   20  30.762 ± 0.527  ops/us
-KeapQueueOrderedBenchmark.offerDecreasing  thrpt   20   8.177 ± 0.121  ops/us
-KeapQueueOrderedBenchmark.offerIncreasing  thrpt   20   8.467 ± 0.217  ops/us
+JavaQueueOrderedBenchmark.offerDecreasing  thrpt   20   5.432 ± 0.177  ops/us
+JavaQueueOrderedBenchmark.offerIncreasing  thrpt   20  30.795 ± 0.588  ops/us
+KeapQueueOrderedBenchmark.offerDecreasing  thrpt   20   7.959 ± 0.033  ops/us
+KeapQueueOrderedBenchmark.offerIncreasing  thrpt   20   8.860 ± 0.044  ops/us
 ```
 The scores above are numbers of operations per microsecond, for *heapify* - per millisecond. So the greater the score,
 the better performance.
@@ -141,13 +141,13 @@ the better performance.
 <dependency>
     <groupId>com.github.penemue</groupId>
     <artifactId>keap</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
 </dependency>
 ```
 ```groovy
 // in Gradle project
 dependencies {
-    compile 'com.github.penemue:keap:0.2.0'
+    compile 'com.github.penemue:keap:0.2.1'
 }
 ```
 
