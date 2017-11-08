@@ -33,7 +33,7 @@ inline fun <reified T> Collection<T>.jvmSort(cmp: Comparator<in T>): Array<T> {
 }
 
 inline fun <reified T> Iterable<T>.keapSortIterable(cmp: Comparator<in T>): Array<T> {
-    val heap = PriorityQueue(4, cmp)
+    val heap = PriorityQueue(1000000, cmp)
     forEach { heap.offer(it) }
     val result = arrayOfNulls<T>(heap.size)
     repeat(heap.size, { result[it] = heap.poll() })

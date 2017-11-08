@@ -83,7 +83,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
     @Transient
     private var queue: Array<T?> = arrayOfNulls<Any>(capacity.toCapacity) as Array<T?>
     @Transient
-    private var heap = IntArray(queue.size / 2 - 1)
+    private var heap = IntArray(queue.size / 2 - 1).apply { fill(NIL) }
     @Transient
     private var heapSize = heap.size
 
