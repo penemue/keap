@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/penemue/keap.png?branch=master)](https://travis-ci.org/penemue/keap)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.penemue/keap/badge.svg)](http://search.maven.org/#search%7Cga%7C1%7Ccom.github.penemue.keap)
-[![Apache License 2.0](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![Apache License 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 ![Repository Size](https://reposs.herokuapp.com/?path=penemue/keap)
 [![Pure Kotlin](https://img.shields.io/badge/100%25-kotlin-orange.svg)](https://kotlinlang.org)
 
