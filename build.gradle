@@ -56,7 +56,7 @@ test {
 }
 
 jmh {
-    jmhVersion = '1.17.4'
+    jmhVersion = '1.19'
     jvmArgsPrepend '-Xmx1g -Xms1g'
     duplicateClassesStrategy = 'warn'
     forceGC = true
