@@ -171,7 +171,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
                 allocHeap(newCapacity)
             }
             var j = 0
-            if (q != queue) {
+            if (q !== queue) {
                 q.forEach { it?.apply { queue[j++] = this } }
             } else {
                 q.forEach { it?.apply { q[j++] = this } }
