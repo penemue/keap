@@ -49,9 +49,9 @@ abstract class RandomBenchmarkBase {
             val r = Random()
             @Suppress("UNCHECKED_CAST")
             randomStrings = (arrayOfNulls<String>(RANDOM_STRING_COUNT) as Array<String>).apply {
-                repeat(RANDOM_STRING_COUNT, {
+                repeat(RANDOM_STRING_COUNT) {
                     this[it] = "0000000000${Math.abs(r.nextLong())}"
-                })
+                }
             }
             shuffleStrings()
         }

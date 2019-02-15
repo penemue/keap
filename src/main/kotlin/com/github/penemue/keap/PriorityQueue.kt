@@ -314,7 +314,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
             val oldQueue = queue
             allocHeap(count)
             var j = 0
-            repeat(nextFree, { oldQueue[it]?.apply { queue[j++] = this } })
+            repeat(nextFree) { oldQueue[it]?.apply { queue[j++] = this } }
             nextFree = j
             heapify()
         }
@@ -406,10 +406,10 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
         // realloc keap
         allocHeap(count)
         // read in all elements
-        repeat(count, {
+        repeat(count) {
             @Suppress("UNCHECKED_CAST")
             queue[it] = input.readObject() as T ?: throw NullPointerException()
-        })
+        }
         // build the keap
         heapify()
         // the queue is compacted

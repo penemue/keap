@@ -20,7 +20,7 @@ import java.util.*
 /**
  * [Comparator][java.util.Comparator] that counts number of invocations of [compare].
  */
-internal class CountingComparator<T>(val comparator: Comparator<T>) : Comparator<T> {
+internal class CountingComparator<T>(private val comparator: Comparator<T>) : Comparator<T> {
 
     internal var count = 0
 

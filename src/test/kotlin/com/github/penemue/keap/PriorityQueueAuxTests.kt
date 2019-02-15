@@ -42,16 +42,16 @@ class PriorityQueueAuxTests {
     @Test
     fun minCapacity() {
         assertEquals(MIN_CAPACITY, PriorityQueue<Int>().capacity)
-        repeat(MIN_CAPACITY - 1, {
+        repeat(MIN_CAPACITY - 1) {
             assertEquals(MIN_CAPACITY, PriorityQueue<Int>(it + 1).capacity)
-        })
+        }
     }
 
     @Test
     fun stability() {
         val q = PriorityQueue<StableComparable>()
         val rnd = Random()
-        repeat(100000, { q.offer(StableComparable(rnd.nextInt(100))) })
+        repeat(100000) { q.offer(StableComparable(rnd.nextInt(100))) }
         testStability(100000, q)
     }
 
@@ -59,7 +59,7 @@ class PriorityQueueAuxTests {
     fun stabilityOfKeapified() {
         val rnd = Random()
         val rndList = ArrayList<StableComparable>()
-        repeat(100000, { rndList.add(StableComparable(rnd.nextInt(100))) })
+        repeat(100000) { rndList.add(StableComparable(rnd.nextInt(100))) }
         testStability(100000, rndList.keapify())
     }
 
@@ -113,15 +113,15 @@ class PriorityQueueAuxTests {
         }
 
         private fun testQueue(q: Queue<String>, randomStrings: List<String>) {
-            repeat(10000, { q.offer(randomStrings[it]) })
+            repeat(10000) { q.offer(randomStrings[it]) }
             var i = q.size
             while (i < randomStrings.size) {
-                repeat((i % 10) + 1, {
+                repeat((i % 10) + 1) {
                     if (i < randomStrings.size) {
                         q.offer(randomStrings[i++])
                     }
-                })
-                repeat((i % 10) + 1, { q.poll() })
+                }
+                repeat((i % 10) + 1) { q.poll() }
             }
         }
     }
