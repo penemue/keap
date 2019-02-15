@@ -140,19 +140,19 @@ the better performance.
 <dependency>
     <groupId>com.github.penemue</groupId>
     <artifactId>keap</artifactId>
-    <version>0.2.2</version>
+    <version>0.3.0</version>
 </dependency>
 ```
 ```groovy
 // in Gradle project
 dependencies {
-    compile 'com.github.penemue:keap:0.2.2'
+    compile 'com.github.penemue:keap:0.3.0'
 }
 ```
 
 ## Building from Source
 [Gradle](http://www.gradle.org) is used to build, test, and run benchmarks. JDK 1.8 and [Kotlin](http://kotlinlang.org)
-1.2.30 are required. To build the project, run:
+1.3.10 are required. To build the project, run:
 
     ./gradlew
 
