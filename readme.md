@@ -1,7 +1,8 @@
 # Keap
 
-[![Build Status](https://travis-ci.org/penemue/keap.png?branch=master)](https://travis-ci.org/penemue/keap)
+[![Build Status](https://img.shields.io/travis/penemue/keap.svg)](https://travis-ci.org/penemue/keap)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.penemue/keap/badge.svg)](http://search.maven.org/#search%7Cga%7C1%7Ccom.github.penemue.keap)
+[![Maintainability](https://api.codeclimate.com/v1/badges/4161941d1fdf6859d61f/maintainability)](https://codeclimate.com/github/penemue/keap/maintainability)
 [![Apache License 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![Pure Kotlin](https://img.shields.io/badge/100%25-kotlin-orange.svg)](https://kotlinlang.org)
 
