@@ -53,6 +53,11 @@ license {
     }
 }
 
+task licenseFormatForKotlin(type: com.hierynomus.gradle.license.tasks.LicenseFormat) {
+    source = fileTree(dir: project.projectDir).include("**/*.kt")
+}
+licenseFormat.dependsOn licenseFormatForKotlin
+
 repositories {
     jcenter()
 }
