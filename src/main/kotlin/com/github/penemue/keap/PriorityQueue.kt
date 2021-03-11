@@ -19,6 +19,7 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
 import java.util.*
+import kotlin.math.max
 
 /**
  * Extension function creating the priority queue from an [iterable][Iterable] with optionally specified
@@ -71,19 +72,26 @@ fun <T> PriorityQueue<T>.copyOf() = PriorityQueue(this)
  * @see keapSorted
  * @see keapSort
  */
-open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
-                            private val cmp: Comparator<in T>? = null) : AbstractQueue<T>(), Serializable {
+open class PriorityQueue<T>(
+    capacity: Int = MIN_CAPACITY,
+    private val cmp: Comparator<in T>? = null
+) : AbstractQueue<T>(), Serializable {
 
     private var count = 0
+
     @Transient
     private var nextFree = 0
+
     @Transient
     private var modCount = 0
+
     @Suppress("UNCHECKED_CAST")
     @Transient
     private var queue: Array<T?> = arrayOfNulls<Any>(capacity.toCapacity) as Array<T?>
+
     @Transient
     private var heap = IntArray(queue.size / 2 - 1).apply { fill(NIL) }
+
     @Transient
     private var heapSize = heap.size
 
@@ -166,7 +174,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
         } else if (i == queue.size) {
             val q = queue
             // do not allocate new array for the queue if there is enough free space (not less than ~25%)
-            val newCapacity = Math.max(i, ((count + 1) * 4 / 3).toCapacity)
+            val newCapacity = max(i, ((count + 1) * 4 / 3).toCapacity)
             if (newCapacity > i) {
                 allocHeap(newCapacity)
             }
@@ -261,9 +269,9 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
                 return next != null
             }
 
-            private fun checkUnmodified() =
-                    if (expectedModCount != modCount) throw ConcurrentModificationException() else {
-                    }
+            private fun checkUnmodified() {
+                if (expectedModCount != modCount) throw ConcurrentModificationException()
+            }
         }
     }
 
@@ -391,7 +399,7 @@ open class PriorityQueue<T>(capacity: Int = MIN_CAPACITY,
 
     @Suppress("UNCHECKED_CAST")
     private fun compareValues(value1: T, value2: T) =
-            cmp?.compare(value1, value2) ?: (value1 as Comparable<T>).compareTo(value2)
+        cmp?.compare(value1, value2) ?: (value1 as Comparable<T>).compareTo(value2)
 
     private fun writeObject(output: ObjectOutputStream) {
         // write out element count
