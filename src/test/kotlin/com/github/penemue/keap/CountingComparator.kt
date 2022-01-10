@@ -1,11 +1,11 @@
 /**
- * Copyright 2016 - 2021 Vyacheslav Lukianov (https://github.com/penemue)
+ * Copyright 2016 - 2022 Vyacheslav Lukianov (https://github.com/penemue)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package com.github.penemue.keap
-
-import java.util.*
 
 /**
  * [Comparator][java.util.Comparator] that counts number of invocations of [compare].
