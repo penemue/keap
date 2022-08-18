@@ -65,7 +65,7 @@ Performance summary of keap and binary heap (both array-backed) is as follows:
 </table>
 
 Here are two applications: keap-based `PriorityQueue` as a replacement of `java.util.PriorityQueue` and *Keapsort*
-sorting algorithm. Both might be useful in two cases:
+[sorting algorithm](https://www.scaler.com/topics/data-structures/sorting-algorithms/). Both might be useful in two cases:
 
 1. stability is a must;
 1. comparing elements is rather heavyweight operation (e.g., it requires a database access).
