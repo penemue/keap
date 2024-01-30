@@ -20,14 +20,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.*
 
-inline fun <reified T> Collection<T>.heapSort(cmp: Comparator<in T>? = null): Array<T> {
-    val heap = JavaPriorityQueue(cmp, this)
-    val result = arrayOfNulls<T>(size)
-    repeat(size) { result[it] = heap.poll() }
-    @Suppress("UNCHECKED_CAST")
-    return result as Array<T>
-}
-
 inline fun <reified T> Collection<T>.jvmSort(cmp: Comparator<in T>): Array<T> {
     return toTypedArray().apply { Arrays.sort(this, cmp) }
 }
@@ -59,15 +51,6 @@ class SortsTest {
         testSort("keapSortIterable", 100000) { collection, cmp -> collection.keapSortIterable(cmp) }
         testSort("keapSortIterable", 1000000) { collection, cmp -> collection.keapSortIterable(cmp) }
         testSort("keapSortIterable", 2000000) { collection, cmp -> collection.keapSortIterable(cmp) }
-    }
-
-    @Test
-    fun heapSortRandomStrings() {
-        testSort("heapSort", 1000) { collection, cmp -> collection.heapSort(cmp) }
-        testSort("heapSort", 10000) { collection, cmp -> collection.heapSort(cmp) }
-        testSort("heapSort", 100000) { collection, cmp -> collection.heapSort(cmp) }
-        testSort("heapSort", 1000000) { collection, cmp -> collection.heapSort(cmp) }
-        testSort("heapSort", 2000000) { collection, cmp -> collection.heapSort(cmp) }
     }
 
     @Test
