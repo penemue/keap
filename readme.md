@@ -57,7 +57,7 @@ Performance summary of keap and binary heap (both array-backed) is as follows:
 <tr>
 <td>Memory used</td>
 <td><i>Θ</i>(<i>n</i>)</td>
-<td><i>Θ(<i>n</i>)</td>
+<td><i>Θ(<i>n</i>)</i></td>
 <td>exactly <i>n</i></td>
 <td>exactly <i>n</i></td>
 </tr>
