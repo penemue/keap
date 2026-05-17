@@ -401,6 +401,7 @@ open class PriorityQueue<T>(
     private fun compareValues(value1: T, value2: T) =
         cmp?.compare(value1, value2) ?: (value1 as Comparable<T>).compareTo(value2)
 
+    @Suppress("unused") // called via reflection by Java serialization
     private fun writeObject(output: ObjectOutputStream) {
         // write out element count
         output.defaultWriteObject()
@@ -408,6 +409,7 @@ open class PriorityQueue<T>(
         forEach { output.writeObject(it) }
     }
 
+    @Suppress("unused") // called via reflection by Java serialization
     private fun readObject(input: ObjectInputStream) {
         // read in element count
         input.defaultReadObject()
@@ -426,6 +428,7 @@ open class PriorityQueue<T>(
 
     internal companion object {
 
+        @Suppress("unused") // read via reflection by Java serialization
         private const val serialVersionUID = 2808197179219145169L
 
         private const val NIL = -1
