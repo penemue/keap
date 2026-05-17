@@ -22,8 +22,7 @@ import java.util.*
 import kotlin.math.max
 
 /**
- * Extension function creating the priority queue from an [iterable][Iterable] with optionally specified
- * [comparator][Comparator].
+ * Creates a priority queue from this [Iterable] with an optionally specified [Comparator].
  */
 fun <T> Iterable<T>.keapify(cmp: Comparator<in T>? = null): PriorityQueue<T> {
     if (this is Collection) {
@@ -35,32 +34,32 @@ fun <T> Iterable<T>.keapify(cmp: Comparator<in T>? = null): PriorityQueue<T> {
 }
 
 /**
- * Extension function creating the copy of this priority queue.
+ * Creates a copy of this priority queue.
  */
 fun <T> PriorityQueue<T>.copyOf() = PriorityQueue(this)
 
 /**
- * A priority [queue][java.util.Queue] based on keap, a heap data structure similar to binary heap.
- * It maintains separately the [queue][queue] of elements and the [tournament tree][heap] atop the queue.
+ * A priority [queue][java.util.Queue] based on keap, a heap data structure similar to a binary heap.
+ * It separately maintains the [queue] of elements and the [tournament tree][heap] atop the queue.
  * The elements of the priority queue are ordered according to their [natural ordering][java.lang.Comparable],
- * or by a [comparator][Comparator] provided at queue construction time, depending on which constructor is
+ * or by a [Comparator] provided at queue construction time, depending on which constructor is
  * used. A priority queue does not permit `null` elements. A priority queue relying on natural ordering also
  * does not permit insertion of non-comparable objects (doing so results in `ClassCastException`).
  *
- * This priority queue is a full featured replacement of [java.util.PriorityQueue] with two advantages:
+ * This priority queue is a full-featured replacement for [java.util.PriorityQueue] with two advantages:
  * better performance and stability.
  *
- * Better performance means that the priority queue almost always does less comparisons of its elements.
- * For random input, the priority queue compared to `java.util.PriorityQueue` does approximately 90%
- * less comparisons to [heapify][heapify], 20% more comparisons to [offer][offer], and more than 3 times less
- * comparisons to [poll][poll]. Though, it requires 2-3 times more memory than `java.util.PriorityQueue`.
+ * Better performance means that the priority queue almost always performs fewer comparisons of its elements.
+ * For random input, compared to `java.util.PriorityQueue`, the priority queue performs approximately 90%
+ * fewer comparisons to [heapify], 20% more comparisons to [offer], and more than 3 times fewer
+ * comparisons to [poll]. However, it requires 2-3 times more memory than `java.util.PriorityQueue`.
  *
- * Stability means that the priority queue keeps initial order of equal elements added to the queue.
- * This feature allows [Keapsort][keapSorted], a sorting algorithm similar to
- * [Heapsort][https://en.wikipedia.org/wiki/Heapsort], but stable and faster in terms of number of comparisons.
+ * Stability means that the priority queue preserves the initial order of equal elements added to the queue.
+ * This feature enables [Keapsort][keapSorted], a sorting algorithm similar to
+ * [Heapsort][https://en.wikipedia.org/wiki/Heapsort], but stable and faster in terms of the number of comparisons.
  *
  * This class and its iterator implement all of the *optional* methods of the [java.util.Collection] and
- * [java.util.Iterator] interfaces. The Iterator provided by [iterator][iterator] is *not*
+ * [java.util.Iterator] interfaces. The iterator provided by [iterator] is *not*
  * guaranteed to traverse the elements of the priority queue in any order. If you need ordered
  * traversal, consider using [SortedIterable].
  *
@@ -104,8 +103,8 @@ open class PriorityQueue<T>(
     constructor(cmp: Comparator<in T>) : this(MIN_CAPACITY, cmp)
 
     /**
-     * Creates a `PriorityQueue` containing the elements in the specified collection ordered according
-     * to the specified comparator. If the comparator is not set (i.e. it's `null`) the priority queue
+     * Creates a `PriorityQueue` containing the elements of the specified collection, ordered according
+     * to the specified comparator. If the comparator is not set (i.e., it's `null`), the priority queue
      * will be ordered according to the [natural ordering][java.lang.Comparable] of its elements.
      *
      * @param  c the collection whose elements are to be placed into this priority queue
@@ -118,9 +117,9 @@ open class PriorityQueue<T>(
     }
 
     /**
-     * Copying constructor creates a `PriorityQueue` which is the same as the specified priority queue.
+     * Copy constructor that creates a `PriorityQueue` equal to the specified priority queue.
      *
-     * @param c the priority queue which the copy should be created of
+     * @param c the priority queue to copy from
      * @see copyOf
      */
     constructor(c: PriorityQueue<T>) : this(c.queue.size, c.cmp) {
@@ -132,7 +131,7 @@ open class PriorityQueue<T>(
 
     /**
      * Returns the comparator used to order the elements in this queue, or `null` if this queue is
-     * sorted according to the {[natural ordering][java.lang.Comparable] of its elements.
+     * sorted according to the [natural ordering][java.lang.Comparable] of its elements.
      *
      * @return the comparator used to order this queue, or `null` if this queue is sorted according
      * to the natural ordering of its elements
@@ -146,16 +145,16 @@ open class PriorityQueue<T>(
     }
 
     /**
-     * Retrieves and removes the least element if any exists without [compaction][compactIfNecessary] of this queue.
-     * Is used in [keapSort] in order to avoid unnecessary comparisons being performed during compaction.
+     * Retrieves and removes the least element, if any, without [compaction][compactIfNecessary] of this queue.
+     * Used in [keapSort] to avoid unnecessary comparisons during compaction.
      */
     fun pollRaw(): T? = if (isEmpty()) null else removeAtEven(heap[0])
 
     /**
      * Inserts the specified element into this priority queue.
      *
-     * @return `true` (as specified by [Queue.offer()][java.util.Queue#offer])
-     * @throws ClassCastException if the specified element cannot be compared with elements currently in this
+     * @return `true` (as specified by [Queue.offer][java.util.Queue.offer])
+     * @throws ClassCastException if the specified element cannot be compared with the elements currently in this
      * priority queue according to the priority queue's ordering
      * @throws NullPointerException if the specified element is `null`
      */
@@ -173,7 +172,7 @@ open class PriorityQueue<T>(
             }
         } else if (i == queue.size) {
             val q = queue
-            // do not allocate new array for the queue if there is enough free space (not less than ~25%)
+            // do not allocate a new array for the queue if there is enough free space (at least ~25%)
             val newCapacity = max(i, ((count + 1) * 4 / 3).toCapacity)
             if (newCapacity > i) {
                 allocHeap(newCapacity)
@@ -439,7 +438,7 @@ open class PriorityQueue<T>(
                 if (this < 1) {
                     throw IllegalArgumentException()
                 }
-                // capacity if always a power of 2
+                // capacity is always a power of 2
                 val result = Integer.highestOneBit(2 * this - 1)
                 return if (result < MIN_CAPACITY) MIN_CAPACITY else result
             }
