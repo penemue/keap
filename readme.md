@@ -142,10 +142,10 @@ The scores above are operations per microsecond, or per millisecond for *heapify
     <version>0.3.0</version>
 </dependency>
 ```
-```groovy
+```kotlin
 // in Gradle project
 dependencies {
-    implementation 'com.github.penemue:keap:0.3.0'
+    implementation("com.github.penemue:keap:0.3.0")
 }
 ```
 
