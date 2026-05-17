@@ -1,7 +1,6 @@
 # Keap
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.penemue/keap.svg)](https://central.sonatype.com/artifact/com.github.penemue/keap)
-[![Maintainability](https://api.codeclimate.com/v1/badges/4161941d1fdf6859d61f/maintainability)](https://codeclimate.com/github/penemue/keap/maintainability)
 [![Apache License 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![Pure Kotlin](https://img.shields.io/badge/100%25-kotlin-orange.svg)](https://kotlinlang.org)
 
