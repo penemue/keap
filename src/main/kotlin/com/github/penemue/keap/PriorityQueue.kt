@@ -89,7 +89,7 @@ open class PriorityQueue<T>(
     private var queue: Array<T?> = arrayOfNulls<Any>(capacity.toCapacity) as Array<T?>
 
     @Transient
-    private var heap = IntArray(queue.size / 2 - 1).apply { fill(NIL) }
+    private var heap = IntArray(queue.size / 2 - 1) { NIL }
 
     @Transient
     private var heapSize = heap.size
@@ -163,7 +163,7 @@ open class PriorityQueue<T>(
         val i = nextFree
         if (i.isOdd) {
             val neighbour = queue[i - 1] ?: throw NullPointerException()
-            if (compareValues(e, neighbour) >= 0) {
+            if (compare(e, neighbour) >= 0) {
                 queue[i] = e
             } else {
                 queue[i - 1] = e
@@ -235,42 +235,36 @@ open class PriorityQueue<T>(
      * @return an iterator over the elements in this queue
      * @see SortedIterable
      */
-    override fun iterator(): MutableIterator<T> {
-        return object : MutableIterator<T> {
+    override fun iterator(): MutableIterator<T> = object : MutableIterator<T> {
 
-            var expectedModCount = modCount
-            var next: T? = null
-            var cursor = -1
+        private var expectedModCount = modCount
+        private var nextElement: T? = null
+        private var cursor = -1
 
-            override fun remove() {
-                checkUnmodified()
-                val i = cursor
-                removeAt(i)
-                if (i.isEven) {
-                    --cursor
-                }
-                expectedModCount = modCount
+        override fun hasNext(): Boolean {
+            checkUnmodified()
+            var i = cursor
+            while (nextElement == null && ++i < queue.size) {
+                nextElement = queue[i]
             }
+            cursor = i
+            return nextElement != null
+        }
 
-            override fun next(): T {
-                hasNext()
-                return next?.apply { next = null } ?: throw NullPointerException()
-            }
+        override fun next(): T {
+            hasNext()
+            return nextElement?.also { nextElement = null } ?: throw NoSuchElementException()
+        }
 
-            override fun hasNext(): Boolean {
-                checkUnmodified()
-                var i = cursor
-                while (next == null) {
-                    if (++i == queue.size) break
-                    next = queue[i]
-                }
-                cursor = i
-                return next != null
-            }
+        override fun remove() {
+            checkUnmodified()
+            removeAt(cursor)
+            if (cursor.isEven) --cursor
+            expectedModCount = modCount
+        }
 
-            private fun checkUnmodified() {
-                if (expectedModCount != modCount) throw ConcurrentModificationException()
-            }
+        private fun checkUnmodified() {
+            if (expectedModCount != modCount) throw ConcurrentModificationException()
         }
     }
 
@@ -329,8 +323,7 @@ open class PriorityQueue<T>(
 
     private fun removeAt(i: Int): T? {
         if (i.isEven) return removeAtEven(i)
-        val result = queue[i]
-        return result?.apply {
+        return queue[i]?.apply {
             queue[i] = null
             if (i == nextFree - 1) {
                 --nextFree
@@ -342,8 +335,7 @@ open class PriorityQueue<T>(
 
     // remove element at even index
     private fun removeAtEven(i: Int): T? {
-        val result = queue[i]
-        return result?.apply {
+        return queue[i]?.apply {
             queue[i] = queue[i + 1]
             queue[i + 1] = null
             siftUp(i)
@@ -369,9 +361,7 @@ open class PriorityQueue<T>(
     private fun allocHeap(capacity: Int) {
         val adjustedCapacity = capacity.toCapacity
         @Suppress("SENSELESS_COMPARISON") // queue can be null during deserialization
-        if (queue != null && adjustedCapacity == queue.size) {
-            throw IllegalArgumentException("Allocating keap of the same size as existing")
-        }
+        require(queue == null || adjustedCapacity != queue.size) { "Allocating keap of the same size as existing" }
         queue = arrayOfNulls<Any?>(adjustedCapacity) as Array<T?>
         heap = IntArray(queue.size / 2 - 1)
         heapSize = heap.size
@@ -393,11 +383,11 @@ open class PriorityQueue<T>(
         if (value2 == null) return i1
         if (value1 == null) return i2
 
-        return if (compareValues(value1, value2) <= 0) i1 else i2
+        return if (compare(value1, value2) <= 0) i1 else i2
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun compareValues(value1: T, value2: T) =
+    private fun compare(value1: T, value2: T) =
         cmp?.compare(value1, value2) ?: (value1 as Comparable<T>).compareTo(value2)
 
     @Suppress("unused") // called via reflection by Java serialization
@@ -435,12 +425,9 @@ open class PriorityQueue<T>(
 
         private val Int.toCapacity: Int
             get() {
-                if (this < 1) {
-                    throw IllegalArgumentException()
-                }
+                require(this >= 1)
                 // capacity is always a power of 2
-                val result = Integer.highestOneBit(2 * this - 1)
-                return if (result < MIN_CAPACITY) MIN_CAPACITY else result
+                return (2 * this - 1).takeHighestOneBit().coerceAtLeast(MIN_CAPACITY)
             }
 
         private val Int.leftChild: Int get() = this * 2 + 1
@@ -449,9 +436,9 @@ open class PriorityQueue<T>(
 
         private val Int.parent: Int get() = (this - 1) / 2
 
-        private val Int.isOdd: Boolean get() = this.and(1) == 1
+        private val Int.isOdd: Boolean get() = and(1) == 1
 
-        private val Int.isEven: Boolean get() = this.and(1) == 0
+        private val Int.isEven: Boolean get() = and(1) == 0
 
         private infix fun <E> Array<E>.copyFrom(src: Array<E>) = System.arraycopy(src, 0, this, 0, src.size)
 
