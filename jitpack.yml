@@ -1,0 +1,4 @@
+jdk:
+  - openjdk21
+install:
+  - ./gradlew -Pgroup=com.github.penemue publishToMavenLocal

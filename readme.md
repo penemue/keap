@@ -2,6 +2,7 @@
 
 [![Build](https://github.com/penemue/keap/actions/workflows/build.yml/badge.svg)](https://github.com/penemue/keap/actions/workflows/build.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.penemue/keap.svg)](https://central.sonatype.com/artifact/com.github.penemue/keap)
+[![JitPack](https://jitpack.io/v/penemue/keap.svg)](https://jitpack.io/#penemue/keap)
 [![Apache License 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![Pure Kotlin](https://img.shields.io/badge/100%25-kotlin-orange.svg)](https://kotlinlang.org)
 
@@ -133,7 +134,12 @@ KeapQueueOrderedBenchmark.offerIncreasing  thrpt   20   8.860 ± 0.044  ops/us
 The scores above are operations per microsecond, or per millisecond for *heapify*. Higher is better.
 
 ## Download
+
+### Maven Central
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.penemue/keap.svg)](https://central.sonatype.com/artifact/com.github.penemue/keap)
+
+Released versions are available from [Maven Central](https://central.sonatype.com/artifact/com.github.penemue/keap).
+
 ```xml
 <!-- in Maven project -->
 <dependency>
@@ -143,10 +149,41 @@ The scores above are operations per microsecond, or per millisecond for *heapify
 </dependency>
 ```
 ```kotlin
-// in Gradle project
+// in Gradle project (Kotlin DSL)
 dependencies {
     implementation("com.github.penemue:keap:0.3.0")
 }
+```
+
+### JitPack
+[![JitPack](https://jitpack.io/v/penemue/keap.svg)](https://jitpack.io/#penemue/keap)
+
+Any commit, branch, or tag of this repository can be consumed as a Maven artifact via
+[JitPack](https://jitpack.io/#penemue/keap).
+
+```kotlin
+// in Gradle project (Kotlin DSL)
+repositories {
+    maven(url = "https://jitpack.io")
+}
+dependencies {
+    // replace <ref> with a release tag (e.g. 0.3.0), a branch (e.g. master-SNAPSHOT), or a short commit SHA
+    implementation("com.github.penemue:keap:<ref>")
+}
+```
+```xml
+<!-- in Maven project -->
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+<dependency>
+    <groupId>com.github.penemue</groupId>
+    <artifactId>keap</artifactId>
+    <version><!-- tag, branch-SNAPSHOT, or commit SHA --></version>
+</dependency>
 ```
 
 ## Building from Source
