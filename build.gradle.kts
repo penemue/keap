@@ -102,7 +102,7 @@ artifacts {
     add("archives", sourceJar)
 }
 
-if (!isSnapshot) {
+if (!isSnapshot && signingKeyId.isNotEmpty()) {
     extra["signing.keyId"] = signingKeyId
     extra["signing.password"] = signingPasswordProp
     extra["signing.secretKeyRingFile"] = signingSecretKeyRingFile
@@ -159,6 +159,9 @@ publishing {
 }
 
 signing {
-    setRequired({ !isSnapshot && gradle.taskGraph.allTasks.any { it.name.startsWith("publish") } })
+    setRequired({
+        !isSnapshot && mavenPublishUrl.isNotEmpty() &&
+            gradle.taskGraph.allTasks.any { it.name.startsWith("publish") && it.name != "publishToMavenLocal" }
+    })
     sign(publishing.publications["mavenJava"])
 }
