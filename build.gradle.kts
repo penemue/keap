@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "com.github.penemue"
-version = (findProperty("keapVersion") as String?) ?: "0.3.0-SNAPSHOT"
+version = (findProperty("keapVersion") as String?) ?: "0.4.1"
 
 val isSnapshot = version.toString().endsWith("SNAPSHOT")
 val mavenPublishUrl = (findProperty("mavenPublishUrl") as String?) ?: ""

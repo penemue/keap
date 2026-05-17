@@ -138,7 +138,9 @@ The scores above are operations per microsecond, or per millisecond for *heapify
 ### Maven Central
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.penemue/keap.svg)](https://central.sonatype.com/artifact/com.github.penemue/keap)
 
-Released versions are available from [Maven Central](https://central.sonatype.com/artifact/com.github.penemue/keap).
+Versions up to and including `0.3.0` are available from
+[Maven Central](https://central.sonatype.com/artifact/com.github.penemue/keap). Newer releases are published via
+JitPack (see below).
 
 ```xml
 <!-- in Maven project -->
@@ -167,8 +169,7 @@ repositories {
     maven(url = "https://jitpack.io")
 }
 dependencies {
-    // replace <ref> with a release tag (e.g. 0.3.0), a branch (e.g. master-SNAPSHOT), or a short commit SHA
-    implementation("com.github.penemue:keap:<ref>")
+    implementation("com.github.penemue:keap:0.4.1")
 }
 ```
 ```xml
@@ -182,7 +183,7 @@ dependencies {
 <dependency>
     <groupId>com.github.penemue</groupId>
     <artifactId>keap</artifactId>
-    <version><!-- tag, branch-SNAPSHOT, or commit SHA --></version>
+    <version>0.4.1</version>
 </dependency>
 ```
 
