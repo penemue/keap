@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import java.util.Calendar
 
 plugins {
-    kotlin("jvm") version "2.3.21"
+    kotlin("jvm") version "2.4.0"
     id("org.jetbrains.dokka") version "2.1.0"
     id("org.jetbrains.dokka-javadoc") version "2.1.0"
     id("com.github.hierynomus.license") version "0.16.1"
@@ -41,8 +41,8 @@ java {
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_1_8)
-        languageVersion.set(KotlinVersion.KOTLIN_2_3)
-        apiVersion.set(KotlinVersion.KOTLIN_2_3)
+        languageVersion.set(KotlinVersion.KOTLIN_2_4)
+        apiVersion.set(KotlinVersion.KOTLIN_2_4)
     }
 }
 
