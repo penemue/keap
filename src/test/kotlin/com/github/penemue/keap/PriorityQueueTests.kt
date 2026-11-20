@@ -117,6 +117,24 @@ class PriorityQueueTests {
     }
 
     /**
+     * Initializing from an empty Collection yields an empty, usable queue
+     */
+    @Test
+    fun testConstructorEmptyCollection() {
+        val cmp = MyReverseComparator()
+        val q = PriorityQueue(emptyList<Int>(), cmp)
+        assertEquals(cmp, q.comparator())
+        assertTrue(q.isEmpty())
+        assertNull(q.peek())
+        assertNull(q.poll())
+        assertTrue(q.offer(1))
+        assertTrue(q.offer(2))
+        assertEquals(2, q.poll())
+        assertEquals(1, q.poll())
+        assertTrue(q.isEmpty())
+    }
+
+    /**
      * The comparator used in constructor is used
      */
     @Test
@@ -258,7 +276,7 @@ class PriorityQueueTests {
     fun testPoll() {
         val q = populatedQueue(SIZE)
         for (i in 0 until SIZE) {
-            assertEquals(i, (q.poll() as Int).toInt())
+            assertEquals(i, (q.poll() as Int))
         }
         assertNull(q.poll())
     }
@@ -270,9 +288,9 @@ class PriorityQueueTests {
     fun testPeek() {
         val q = populatedQueue(SIZE)
         for (i in 0 until SIZE) {
-            assertEquals(i, (q.peek() as Int).toInt())
+            assertEquals(i, (q.peek() as Int))
             q.poll()
-            assertTrue(q.peek() == null || i != (q.peek() as Int).toInt())
+            assertTrue(q.peek() == null || i != (q.peek() as Int))
         }
         assertNull(q.peek())
     }
@@ -284,7 +302,7 @@ class PriorityQueueTests {
     fun testElement() {
         val q = populatedQueue(SIZE)
         for (i in 0 until SIZE) {
-            assertEquals(i, (q.element() as Int).toInt())
+            assertEquals(i, (q.element() as Int))
             q.poll()
         }
         try {
@@ -301,7 +319,7 @@ class PriorityQueueTests {
     fun testRemove() {
         val q = populatedQueue(SIZE)
         for (i in 0 until SIZE) {
-            assertEquals(i, (q.remove() as Int).toInt())
+            assertEquals(i, (q.remove() as Int))
         }
         try {
             q.remove()
@@ -320,7 +338,7 @@ class PriorityQueueTests {
         try {
             q.remove()
             shouldThrow()
-        } catch (success: NoSuchElementException) {
+        } catch (_: NoSuchElementException) {
         }
     }
 

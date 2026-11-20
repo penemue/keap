@@ -16,6 +16,8 @@
 package com.github.penemue.keap
 
 import com.github.penemue.keap.RandomStrings.randomStringListOfSize
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.*
@@ -34,6 +36,14 @@ inline fun <reified T> Iterable<T>.keapSortIterable(cmp: Comparator<in T>): Arra
 }
 
 class SortsTest {
+
+    @Test
+    fun keapSortEmpty() {
+        assertEquals(0, emptyList<String>().keapSort().size)
+        assertEquals(0, arrayOf<String>().keapSort().size)
+        assertEquals(0, emptyList<String>().keapSort(Comparator.reverseOrder()).size)
+        assertFalse(emptyList<String>().keapSorted().iterator().hasNext())
+    }
 
     @Test
     fun keapSortRandomStrings() {

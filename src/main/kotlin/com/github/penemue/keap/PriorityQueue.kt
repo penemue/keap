@@ -110,7 +110,7 @@ open class PriorityQueue<T>(
      * @param  c the collection whose elements are to be placed into this priority queue
      * @param  cmp the comparator that will be used to order this priority queue
      */
-    constructor(c: Collection<T>, cmp: Comparator<in T>? = null) : this(c.size, cmp) {
+    constructor(c: Collection<T>, cmp: Comparator<in T>? = null) : this(max(c.size, 1), cmp) {
         count = c.size
         c.forEach { queue[nextFree++] = it ?: throw NullPointerException() }
         heapify()

@@ -40,6 +40,13 @@ class PriorityQueueAuxTests {
     }
 
     @Test
+    fun keapifyEmpty() {
+        assertTrue(emptyList<String>().keapify().isEmpty())
+        assertTrue(emptySequence<String>().asIterable().keapify().isEmpty())
+        assertEquals(MIN_CAPACITY, emptyList<String>().keapify().capacity)
+    }
+
+    @Test
     fun minCapacity() {
         assertEquals(MIN_CAPACITY, PriorityQueue<Int>().capacity)
         repeat(MIN_CAPACITY - 1) {
