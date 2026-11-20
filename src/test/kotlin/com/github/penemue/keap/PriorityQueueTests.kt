@@ -472,6 +472,35 @@ class PriorityQueueTests {
     @Test
     fun testSerialization() {
         val q = populatedQueue(SIZE)
+        val r = serializedCopy(q)
+        assertEquals(q.size, r.size)
+        while (!q.isEmpty()) {
+            assertEquals(q.remove(), r.remove())
+        }
+    }
+
+    /**
+     * A deserialized serialized empty queue is empty and usable,
+     * whether it was never filled or has been drained
+     */
+    @Test
+    fun testSerializationEmpty() {
+        val drained = populatedQueue(SIZE)
+        repeat(SIZE) { drained.poll() }
+        for (q in listOf(PriorityQueue(), drained)) {
+            val r = serializedCopy(q)
+            assertTrue(r.isEmpty())
+            assertNull(r.peek())
+            assertNull(r.poll())
+            assertTrue(r.offer(2))
+            assertTrue(r.offer(1))
+            assertEquals(1, r.poll())
+            assertEquals(2, r.poll())
+            assertTrue(r.isEmpty())
+        }
+    }
+
+    private fun <T> serializedCopy(q: PriorityQueue<T>): PriorityQueue<T> {
         val bout = ByteArrayOutputStream(10000)
         val output = ObjectOutputStream(BufferedOutputStream(bout))
         output.writeObject(q)
@@ -479,11 +508,8 @@ class PriorityQueueTests {
 
         val bin = ByteArrayInputStream(bout.toByteArray())
         val input = ObjectInputStream(BufferedInputStream(bin))
-        val r = input.readObject() as PriorityQueue<*>
-        assertEquals(q.size, r.size)
-        while (!q.isEmpty()) {
-            assertEquals(q.remove(), r.remove())
-        }
+        @Suppress("UNCHECKED_CAST")
+        return input.readObject() as PriorityQueue<T>
     }
 
     internal class MyReverseComparator : Comparator<Int> {

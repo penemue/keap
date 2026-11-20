@@ -402,8 +402,8 @@ open class PriorityQueue<T>(
     private fun readObject(input: ObjectInputStream) {
         // read in element count
         input.defaultReadObject()
-        // realloc keap
-        allocHeap(count)
+        // realloc keap (an empty queue still needs the minimum capacity)
+        allocHeap(max(count, 1))
         // read in all elements
         repeat(count) {
             @Suppress("UNCHECKED_CAST")
