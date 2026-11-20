@@ -18,7 +18,6 @@ package com.github.penemue.keap
 import org.junit.Assert.*
 import org.junit.Test
 import java.io.*
-import java.util.*
 
 const val SIZE = 1000
 
@@ -61,44 +60,30 @@ class PriorityQueueTests {
     /**
      * Constructor throws IAE if  capacity argument nonpositive
      */
-    @Test
+    @Test(expected = IllegalArgumentException::class)
     fun testConstructor2() {
-        try {
-            PriorityQueue<Int>(0)
-            shouldThrow()
-        } catch (success: IllegalArgumentException) {
-        }
-
+        PriorityQueue<Int>(0)
     }
 
     /**
      * Initializing from Collection of null elements throws NPE
      */
-    @Test
+    @Test(expected = NullPointerException::class)
     fun testConstructor4() {
-        try {
-            val ints = arrayOfNulls<Int>(SIZE)
-            PriorityQueue(Arrays.asList<Int>(*ints))
-            shouldThrow()
-        } catch (success: NullPointerException) {
-        }
+        val ints = arrayOfNulls<Int>(SIZE)
+        PriorityQueue(ints.asList())
     }
 
     /**
      * Initializing from Collection with some null elements throws NPE
      */
-    @Test
+    @Test(expected = NullPointerException::class)
     fun testConstructor5() {
-        try {
-            val ints = arrayOfNulls<Int>(SIZE)
-            for (i in 0 until SIZE - 1) {
-                ints[i] = i
-            }
-            PriorityQueue(Arrays.asList<Int>(*ints))
-            shouldThrow()
-        } catch (success: NullPointerException) {
+        val ints = arrayOfNulls<Int>(SIZE)
+        for (i in 0 until SIZE - 1) {
+            ints[i] = i
         }
-
+        PriorityQueue(ints.asList())
     }
 
     /**
@@ -106,11 +91,8 @@ class PriorityQueueTests {
      */
     @Test
     fun testConstructor6() {
-        val ints = arrayOfNulls<Int>(SIZE)
-        for (i in 0 until SIZE) {
-            ints[i] = i
-        }
-        val q = PriorityQueue(Arrays.asList<Int>(*ints))
+        val ints = Array(SIZE) { it }
+        val q = PriorityQueue(ints.asList())
         for (i in 0 until SIZE) {
             assertEquals(ints[i], q.poll())
         }
@@ -122,7 +104,7 @@ class PriorityQueueTests {
     @Test
     fun testConstructorEmptyCollection() {
         val cmp = MyReverseComparator()
-        val q = PriorityQueue(emptyList<Int>(), cmp)
+        val q = PriorityQueue(emptyList(), cmp)
         assertEquals(cmp, q.comparator())
         assertTrue(q.isEmpty())
         assertNull(q.peek())
@@ -142,11 +124,8 @@ class PriorityQueueTests {
         val cmp = MyReverseComparator()
         val q = PriorityQueue(SIZE, cmp)
         assertEquals(cmp, q.comparator())
-        val ints = arrayOfNulls<Int>(SIZE)
-        for (i in 0 until SIZE) {
-            ints[i] = i
-        }
-        q.addAll(Arrays.asList<Int>(*ints))
+        val ints = Array(SIZE) { it }
+        q.addAll(ints.asList())
         for (i in SIZE - 1 downTo 0) {
             assertEquals(ints[i], q.poll())
         }
@@ -196,16 +175,12 @@ class PriorityQueueTests {
     /**
      * Offer of non-Comparable throws CCE
      */
-    @Test
+    @Test(expected = ClassCastException::class)
     fun testOfferNonComparable() {
-        try {
-            val q = PriorityQueue<Any>(1)
-            q.offer(Any())
-            q.offer(Any())
-            q.offer(Any())
-            shouldThrow()
-        } catch (success: ClassCastException) {
-        }
+        val q = PriorityQueue<Any>(1)
+        q.offer(Any())
+        q.offer(Any())
+        q.offer(Any())
     }
 
     /**
@@ -223,32 +198,24 @@ class PriorityQueueTests {
     /**
      * addAll of a collection with null elements throws NPE
      */
-    @Test
+    @Test(expected = NullPointerException::class)
     fun testAddAll2() {
-        try {
-            val q = PriorityQueue<Int>(SIZE)
-            val ints = arrayOfNulls<Int>(SIZE)
-            q.addAll(Arrays.asList<Int>(*ints))
-            shouldThrow()
-        } catch (success: NullPointerException) {
-        }
+        val q = PriorityQueue<Int?>(SIZE)
+        val ints = arrayOfNulls<Int>(SIZE)
+        q.addAll(ints.asList())
     }
 
     /**
      * addAll of a collection with any null elements throws NPE after
      * possibly adding some elements
      */
-    @Test
+    @Test(expected = NullPointerException::class)
     fun testAddAll3() {
-        try {
-            val q = PriorityQueue<Int>(SIZE)
-            val ints = arrayOfNulls<Int>(SIZE)
-            for (i in 0 until SIZE - 1)
-                ints[i] = i
-            q.addAll(Arrays.asList<Int>(*ints))
-            shouldThrow()
-        } catch (success: NullPointerException) {
-        }
+        val q = PriorityQueue<Int?>(SIZE)
+        val ints = arrayOfNulls<Int>(SIZE)
+        for (i in 0 until SIZE - 1)
+            ints[i] = i
+        q.addAll(ints.asList())
     }
 
     /**
@@ -256,14 +223,10 @@ class PriorityQueueTests {
      */
     @Test
     fun testAddAll5() {
-        val empty = arrayOfNulls<Int>(0)
-        val ints = arrayOfNulls<Int>(SIZE)
-        for (i in 0 until SIZE) {
-            ints[i] = SIZE - 1 - i
-        }
+        val ints = Array(SIZE) { SIZE - 1 - it }
         val q = PriorityQueue<Int>(SIZE)
-        assertFalse(q.addAll(Arrays.asList<Int>(*empty)))
-        assertTrue(q.addAll(Arrays.asList<Int>(*ints)))
+        assertFalse(q.addAll(emptyList()))
+        assertTrue(q.addAll(ints.asList()))
         for (i in 0 until SIZE) {
             assertEquals(i, q.poll())
         }
@@ -298,48 +261,36 @@ class PriorityQueueTests {
     /**
      * element returns next element, or throws NSEE if empty
      */
-    @Test
+    @Test(expected = NoSuchElementException::class)
     fun testElement() {
         val q = populatedQueue(SIZE)
         for (i in 0 until SIZE) {
             assertEquals(i, (q.element() as Int))
             q.poll()
         }
-        try {
-            q.element()
-            shouldThrow()
-        } catch (success: NoSuchElementException) {
-        }
+        q.element()
     }
 
     /**
      * remove removes next element, or throws NSEE if empty
      */
-    @Test
+    @Test(expected = NoSuchElementException::class)
     fun testRemove() {
         val q = populatedQueue(SIZE)
         for (i in 0 until SIZE) {
             assertEquals(i, (q.remove() as Int))
         }
-        try {
-            q.remove()
-            shouldThrow()
-        } catch (success: NoSuchElementException) {
-        }
+        q.remove()
     }
 
-    @Test
+    @Test(expected = NoSuchElementException::class)
     fun testRemove2() {
         val q = populatedQueue(SIZE)
         for (i in SIZE - 1 downTo 0) {
             assertTrue(q.remove(i))
             assertEquals(i, q.size)
         }
-        try {
-            q.remove()
-            shouldThrow()
-        } catch (_: NoSuchElementException) {
-        }
+        q.remove()
     }
 
     /**
@@ -437,7 +388,7 @@ class PriorityQueueTests {
             val p = populatedQueue(i)
             assertTrue(q.removeAll(p))
             assertEquals(SIZE - i, q.size)
-            for (j in 0 until i) {
+            repeat(i) {
                 assertFalse(q.contains(p.remove()))
             }
         }
@@ -450,7 +401,7 @@ class PriorityQueueTests {
     fun testToArray() {
         val q = populatedQueue(SIZE)
         val o = q.toTypedArray()
-        Arrays.sort(o)
+        o.sort()
         for (i in o.indices)
             assertEquals(o[i], q.poll())
     }
@@ -461,10 +412,8 @@ class PriorityQueueTests {
     @Test
     fun testToArray2() {
         val q = populatedQueue(SIZE)
-        @Suppress("VARIABLE_WITH_REDUNDANT_INITIALIZER")
-        var ints = arrayOfNulls<Int>(SIZE)
-        ints = q.toTypedArray()
-        Arrays.sort(ints)
+        val ints = q.toTypedArray()
+        ints.sort()
         for (i in ints.indices)
             assertEquals(ints[i], q.poll())
     }
@@ -481,7 +430,7 @@ class PriorityQueueTests {
             assertTrue(q.contains(it.next()))
             ++i
         }
-        assertEquals(i, SIZE)
+        assertEquals(SIZE, i)
     }
 
     /**
@@ -523,27 +472,18 @@ class PriorityQueueTests {
     @Test
     fun testSerialization() {
         val q = populatedQueue(SIZE)
-        try {
-            val bout = ByteArrayOutputStream(10000)
-            val output = ObjectOutputStream(BufferedOutputStream(bout))
-            output.writeObject(q)
-            output.close()
+        val bout = ByteArrayOutputStream(10000)
+        val output = ObjectOutputStream(BufferedOutputStream(bout))
+        output.writeObject(q)
+        output.close()
 
-            val bin = ByteArrayInputStream(bout.toByteArray())
-            val input = ObjectInputStream(BufferedInputStream(bin))
-            val r = input.readObject() as PriorityQueue<*>
-            assertEquals(q.size, r.size)
-            while (!q.isEmpty()) {
-                assertEquals(q.remove(), r.remove())
-            }
-        } catch (e: Exception) {
-            println(e)
-            shouldThrow()
+        val bin = ByteArrayInputStream(bout.toByteArray())
+        val input = ObjectInputStream(BufferedInputStream(bin))
+        val r = input.readObject() as PriorityQueue<*>
+        assertEquals(q.size, r.size)
+        while (!q.isEmpty()) {
+            assertEquals(q.remove(), r.remove())
         }
-    }
-
-    private fun shouldThrow() {
-        assertTrue(false)
     }
 
     internal class MyReverseComparator : Comparator<Int> {

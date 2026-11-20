@@ -21,6 +21,8 @@ import org.openjdk.jmh.annotations.*
 import org.openjdk.jmh.infra.Blackhole
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.abs
+import kotlin.math.min
 
 open class KeapQueueRandomBenchmark : RandomBenchmarkBase() {
 
@@ -50,14 +52,14 @@ abstract class RandomBenchmarkBase {
             @Suppress("UNCHECKED_CAST")
             randomStrings = (arrayOfNulls<String>(RANDOM_STRING_COUNT) as Array<String>).apply {
                 repeat(RANDOM_STRING_COUNT) {
-                    this[it] = "0000000000${Math.abs(r.nextLong())}"
+                    this[it] = "0000000000${abs(r.nextLong())}"
                 }
             }
             shuffleStrings()
         }
 
         private fun shuffleStrings() {
-            Collections.shuffle(randomStrings.asList())
+            randomStrings.shuffle()
         }
     }
 
@@ -87,7 +89,7 @@ abstract class RandomBenchmarkBase {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(4)
     fun heapify(bh: Blackhole) {
-        val i = Math.min(this.i, RANDOM_STRING_COUNT - PRIORITY_QUEUE_SIZE)
+        val i = min(this.i, RANDOM_STRING_COUNT - PRIORITY_QUEUE_SIZE)
         bh.consume(createQueue(randomStrings.copyOfRange(i, i + PRIORITY_QUEUE_SIZE).asList()))
     }
 

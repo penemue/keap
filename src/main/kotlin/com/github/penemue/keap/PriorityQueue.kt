@@ -440,8 +440,12 @@ open class PriorityQueue<T>(
 
         private val Int.isEven: Boolean get() = and(1) == 0
 
-        private infix fun <E> Array<E>.copyFrom(src: Array<E>) = System.arraycopy(src, 0, this, 0, src.size)
+        private infix fun <E> Array<E>.copyFrom(src: Array<E>) {
+            src.copyInto(this)
+        }
 
-        private infix fun IntArray.copyFrom(src: IntArray) = System.arraycopy(src, 0, this, 0, src.size)
+        private infix fun IntArray.copyFrom(src: IntArray) {
+            src.copyInto(this)
+        }
     }
 }

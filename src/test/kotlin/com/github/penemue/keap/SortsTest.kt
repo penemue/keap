@@ -20,10 +20,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.util.*
 
 inline fun <reified T> Collection<T>.jvmSort(cmp: Comparator<in T>): Array<T> {
-    return toTypedArray().apply { Arrays.sort(this, cmp) }
+    return toTypedArray().apply { sortWith(cmp) }
 }
 
 inline fun <reified T> Iterable<T>.keapSortIterable(cmp: Comparator<in T>): Array<T> {
