@@ -18,6 +18,7 @@ package com.github.penemue.keap
 import com.github.penemue.keap.PriorityQueue.Companion.MIN_CAPACITY
 import com.github.penemue.keap.RandomStrings.randomStringListOfSize
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.*
@@ -87,6 +88,24 @@ class PriorityQueueAuxTests {
     fun `keapSorted of a priority queue without a comparator keeps the order of the queue`() {
         val source = PriorityQueue(listOf(1, 2, 3), reverseOrder())
         assertEquals(listOf(3, 2, 1), source.keapSorted().toList())
+    }
+
+    @Test
+    fun `clear makes no comparisons and keeps the queue usable`() {
+        val cmp = CountingComparator<Int>(naturalOrder())
+        val keap = PriorityQueue(cmp)
+        (1..100000).shuffled(Random(1)).forEach { keap.offer(it) }
+        val comparisons = cmp.count
+        val capacity = keap.capacity
+
+        keap.clear()
+        assertEquals(comparisons, cmp.count)
+        assertTrue(keap.isEmpty())
+        assertNull(keap.peek())
+        assertEquals(capacity, keap.capacity)
+
+        listOf(3, 1, 2).forEach { keap.offer(it) }
+        assertEquals(listOf(1, 2, 3), generateSequence { keap.poll() }.toList())
     }
 
     @Test

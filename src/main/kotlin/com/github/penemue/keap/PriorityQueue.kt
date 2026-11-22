@@ -225,6 +225,15 @@ open class PriorityQueue<T>(
 
     override fun isEmpty() = count == 0
 
+    override fun clear() {
+        queue.fill(null, 0, nextFree)
+        heap.fill(NIL)
+        heapStale = false
+        nextFree = 0
+        count = 0
+        ++modCount
+    }
+
     internal val capacity: Int get() = queue.size
 
     /**
