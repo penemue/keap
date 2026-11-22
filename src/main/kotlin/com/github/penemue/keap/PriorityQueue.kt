@@ -242,6 +242,7 @@ open class PriorityQueue<T>(
         private var expectedModCount = modCount
         private var nextElement: T? = null
         private var cursor = -1
+        private var lastReturnedIndex = NIL
 
         override fun hasNext(): Boolean {
             checkUnmodified()
@@ -255,13 +256,21 @@ open class PriorityQueue<T>(
 
         override fun next(): T {
             hasNext()
-            return nextElement?.also { nextElement = null } ?: throw NoSuchElementException()
+            val e = nextElement ?: throw NoSuchElementException()
+            nextElement = null
+            lastReturnedIndex = cursor
+            return e
         }
 
         override fun remove() {
             checkUnmodified()
-            removeAt(cursor)
-            if (cursor.isEven) --cursor
+            val i = lastReturnedIndex
+            check(i != NIL) { "next() has not been called, or remove() has already been called after it" }
+            lastReturnedIndex = NIL
+            removeAt(i)
+            // removing at an even index moves the odd neighbour into it, so the scan resumes at that index
+            cursor = if (i.isEven) i - 1 else i
+            nextElement = null
             expectedModCount = modCount
         }
 

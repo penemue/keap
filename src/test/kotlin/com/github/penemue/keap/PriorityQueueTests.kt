@@ -354,6 +354,52 @@ class PriorityQueueTests {
     }
 
     @Test
+    fun `iterator remove after hasNext deletes the element returned by next`() {
+        val q = PriorityQueue(listOf(1, 2, 3, 4))
+        val it = q.iterator()
+        val removed = it.next()
+        assertTrue(it.hasNext())
+        it.remove()
+        assertFalse(removed in q)
+        assertEquals(3, q.size)
+
+        val rest = it.asSequence().toList()
+        assertEquals(q.toSet(), rest.toSet())
+        assertEquals(3, rest.size)
+    }
+
+    @Test
+    fun `iterator remove of every element empties the queue whether or not hasNext is called first`() {
+        for (callHasNext in listOf(false, true)) {
+            val q = populatedQueue(SIZE)
+            val it = q.iterator()
+            val visited = mutableSetOf<Int>()
+            while (it.hasNext()) {
+                assertTrue(visited.add(it.next()))
+                if (callHasNext) it.hasNext()
+                it.remove()
+            }
+            assertTrue(q.isEmpty())
+            assertEquals((0 until SIZE).toSet(), visited)
+        }
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `iterator remove before next throws IllegalStateException`() {
+        PriorityQueue(listOf(1, 2, 3)).iterator().remove()
+    }
+
+    @Test
+    fun `iterator remove called twice in a row throws IllegalStateException and removes one element`() {
+        val q = PriorityQueue(listOf(1, 2, 3, 4))
+        val it = q.iterator()
+        it.next()
+        it.remove()
+        assertThrows(IllegalStateException::class.java) { it.remove() }
+        assertEquals(3, q.size)
+    }
+
+    @Test
     fun `toString contains every element`() {
         val q = populatedQueue(SIZE)
         val s = q.toString()
