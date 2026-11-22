@@ -37,7 +37,7 @@ inline fun <reified T> Iterable<T>.keapSortIterable(cmp: Comparator<in T>): Arra
 class SortsTest {
 
     @Test
-    fun keapSortEmpty() {
+    fun `keapSort of empty input returns an empty array`() {
         assertEquals(0, emptyList<String>().keapSort().size)
         assertEquals(0, arrayOf<String>().keapSort().size)
         assertEquals(0, emptyList<String>().keapSort(Comparator.reverseOrder()).size)
@@ -45,7 +45,7 @@ class SortsTest {
     }
 
     @Test
-    fun keapSortRandomStrings() {
+    fun `keapSort sorts random strings`() {
         testSort("keapSort", 1000) { collection, cmp -> collection.keapSort(cmp) }
         testSort("keapSort", 10000) { collection, cmp -> collection.keapSort(cmp) }
         testSort("keapSort", 100000) { collection, cmp -> collection.keapSort(cmp) }
@@ -54,7 +54,7 @@ class SortsTest {
     }
 
     @Test
-    fun keapSortRandomStrings2() {
+    fun `offering to a queue and polling sorts random strings`() {
         testSort("keapSortIterable", 1000) { collection, cmp -> collection.keapSortIterable(cmp) }
         testSort("keapSortIterable", 10000) { collection, cmp -> collection.keapSortIterable(cmp) }
         testSort("keapSortIterable", 100000) { collection, cmp -> collection.keapSortIterable(cmp) }
@@ -63,7 +63,7 @@ class SortsTest {
     }
 
     @Test
-    fun jvmSortRandomStrings() {
+    fun `java#util#Arrays sorts random strings as a baseline`() {
         val sortName = if (java.lang.Boolean.getBoolean("java.util.Arrays.useLegacyMergeSort")) "mergeSort" else "timSort"
         testSort(sortName, 1000) { collection, cmp -> collection.jvmSort(cmp) }
         testSort(sortName, 10000) { collection, cmp -> collection.jvmSort(cmp) }

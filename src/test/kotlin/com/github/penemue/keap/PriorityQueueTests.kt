@@ -41,44 +41,29 @@ class PriorityQueueTests {
         return q
     }
 
-    /**
-     * A new queue created by default constructor
-     */
     @Test
-    fun testConstructor0() {
+    fun `default constructor creates an empty queue`() {
         assertEquals(0, PriorityQueue<Int>().size)
     }
 
-    /**
-     * A new queue has unbounded capacity
-     */
     @Test
-    fun testConstructor1() {
+    fun `queue created with an initial capacity is empty`() {
         assertEquals(0, PriorityQueue<Int>(SIZE).size)
     }
 
-    /**
-     * Constructor throws IAE if  capacity argument nonpositive
-     */
     @Test(expected = IllegalArgumentException::class)
-    fun testConstructor2() {
+    fun `zero capacity throws IllegalArgumentException`() {
         PriorityQueue<Int>(0)
     }
 
-    /**
-     * Initializing from Collection of null elements throws NPE
-     */
     @Test(expected = NullPointerException::class)
-    fun testConstructor4() {
+    fun `creating from a collection of nulls throws NullPointerException`() {
         val ints = arrayOfNulls<Int>(SIZE)
         PriorityQueue(ints.asList())
     }
 
-    /**
-     * Initializing from Collection with some null elements throws NPE
-     */
     @Test(expected = NullPointerException::class)
-    fun testConstructor5() {
+    fun `creating from a collection with a null element throws NullPointerException`() {
         val ints = arrayOfNulls<Int>(SIZE)
         for (i in 0 until SIZE - 1) {
             ints[i] = i
@@ -86,11 +71,8 @@ class PriorityQueueTests {
         PriorityQueue(ints.asList())
     }
 
-    /**
-     * Queue contains all elements of collection used to initialize
-     */
     @Test
-    fun testConstructor6() {
+    fun `queue created from a collection contains all its elements`() {
         val ints = Array(SIZE) { it }
         val q = PriorityQueue(ints.asList())
         for (i in 0 until SIZE) {
@@ -98,11 +80,8 @@ class PriorityQueueTests {
         }
     }
 
-    /**
-     * Initializing from an empty Collection yields an empty, usable queue
-     */
     @Test
-    fun testConstructorEmptyCollection() {
+    fun `queue created from an empty collection is empty and usable`() {
         val cmp = MyReverseComparator()
         val q = PriorityQueue(emptyList(), cmp)
         assertEquals(cmp, q.comparator())
@@ -116,11 +95,8 @@ class PriorityQueueTests {
         assertTrue(q.isEmpty())
     }
 
-    /**
-     * The comparator used in constructor is used
-     */
     @Test
-    fun testConstructor7() {
+    fun `comparator passed to the constructor orders the queue`() {
         val cmp = MyReverseComparator()
         val q = PriorityQueue(SIZE, cmp)
         assertEquals(cmp, q.comparator())
@@ -131,11 +107,8 @@ class PriorityQueueTests {
         }
     }
 
-    /**
-     * isEmpty is true before add, false after
-     */
     @Test
-    fun testEmpty() {
+    fun `isEmpty is true before add and after removing all elements`() {
         val q = PriorityQueue<Int>(2)
         assertTrue(q.isEmpty())
         q.add(1)
@@ -146,11 +119,8 @@ class PriorityQueueTests {
         assertTrue(q.isEmpty())
     }
 
-    /**
-     * size changes when elements added and removed
-     */
     @Test
-    fun testSize() {
+    fun `size changes as elements are added and removed`() {
         val q = populatedQueue(SIZE)
         for (i in 0 until SIZE) {
             assertEquals(SIZE - i, q.size)
@@ -162,32 +132,23 @@ class PriorityQueueTests {
         }
     }
 
-    /**
-     * Offer of comparable element succeeds
-     */
     @Test
-    fun testOffer() {
+    fun `offer of a comparable element succeeds`() {
         val q = PriorityQueue<Int>(1)
         assertTrue(q.offer(0))
         assertTrue(q.offer(1))
     }
 
-    /**
-     * Offer of non-Comparable throws CCE
-     */
     @Test(expected = ClassCastException::class)
-    fun testOfferNonComparable() {
+    fun `offer of non-comparable elements throws ClassCastException`() {
         val q = PriorityQueue<Any>(1)
         q.offer(Any())
         q.offer(Any())
         q.offer(Any())
     }
 
-    /**
-     * add of comparable succeeds
-     */
     @Test
-    fun testAdd() {
+    fun `add of a comparable element succeeds`() {
         val q = PriorityQueue<Int>(SIZE)
         for (i in 0 until SIZE) {
             assertEquals(i, q.size)
@@ -195,22 +156,15 @@ class PriorityQueueTests {
         }
     }
 
-    /**
-     * addAll of a collection with null elements throws NPE
-     */
     @Test(expected = NullPointerException::class)
-    fun testAddAll2() {
+    fun `addAll of a collection of nulls throws NullPointerException`() {
         val q = PriorityQueue<Int?>(SIZE)
         val ints = arrayOfNulls<Int>(SIZE)
         q.addAll(ints.asList())
     }
 
-    /**
-     * addAll of a collection with any null elements throws NPE after
-     * possibly adding some elements
-     */
     @Test(expected = NullPointerException::class)
-    fun testAddAll3() {
+    fun `addAll of a collection with a null element throws NullPointerException`() {
         val q = PriorityQueue<Int?>(SIZE)
         val ints = arrayOfNulls<Int>(SIZE)
         for (i in 0 until SIZE - 1)
@@ -218,11 +172,8 @@ class PriorityQueueTests {
         q.addAll(ints.asList())
     }
 
-    /**
-     * Queue contains all elements of successful addAll
-     */
     @Test
-    fun testAddAll5() {
+    fun `addAll adds all elements and reports whether the queue changed`() {
         val ints = Array(SIZE) { SIZE - 1 - it }
         val q = PriorityQueue<Int>(SIZE)
         assertFalse(q.addAll(emptyList()))
@@ -232,11 +183,8 @@ class PriorityQueueTests {
         }
     }
 
-    /**
-     * poll succeeds unless empty
-     */
     @Test
-    fun testPoll() {
+    fun `poll returns elements in ascending order and null when empty`() {
         val q = populatedQueue(SIZE)
         for (i in 0 until SIZE) {
             assertEquals(i, (q.poll() as Int))
@@ -244,11 +192,8 @@ class PriorityQueueTests {
         assertNull(q.poll())
     }
 
-    /**
-     * peek returns next element, or null if empty
-     */
     @Test
-    fun testPeek() {
+    fun `peek returns the least element and null when empty`() {
         val q = populatedQueue(SIZE)
         for (i in 0 until SIZE) {
             assertEquals(i, (q.peek() as Int))
@@ -258,11 +203,8 @@ class PriorityQueueTests {
         assertNull(q.peek())
     }
 
-    /**
-     * element returns next element, or throws NSEE if empty
-     */
     @Test(expected = NoSuchElementException::class)
-    fun testElement() {
+    fun `element returns the least element and throws NoSuchElementException when empty`() {
         val q = populatedQueue(SIZE)
         for (i in 0 until SIZE) {
             assertEquals(i, (q.element() as Int))
@@ -271,11 +213,8 @@ class PriorityQueueTests {
         q.element()
     }
 
-    /**
-     * remove removes next element, or throws NSEE if empty
-     */
     @Test(expected = NoSuchElementException::class)
-    fun testRemove() {
+    fun `remove returns the least element and throws NoSuchElementException when empty`() {
         val q = populatedQueue(SIZE)
         for (i in 0 until SIZE) {
             assertEquals(i, (q.remove() as Int))
@@ -284,7 +223,7 @@ class PriorityQueueTests {
     }
 
     @Test(expected = NoSuchElementException::class)
-    fun testRemove2() {
+    fun `remove throws NoSuchElementException after all elements are removed by value`() {
         val q = populatedQueue(SIZE)
         for (i in SIZE - 1 downTo 0) {
             assertTrue(q.remove(i))
@@ -293,11 +232,8 @@ class PriorityQueueTests {
         q.remove()
     }
 
-    /**
-     * remove(x) removes x and returns true if present
-     */
     @Test
-    fun testRemoveElement() {
+    fun `remove of an element returns true only if the element is present`() {
         val q = populatedQueue(SIZE)
         run {
             var i = 1
@@ -315,11 +251,8 @@ class PriorityQueueTests {
         assertTrue(q.isEmpty())
     }
 
-    /**
-     * contains(x) reports true when elements added but not yet removed
-     */
     @Test
-    fun testContains() {
+    fun `contains is true for elements added and not yet removed`() {
         val q = populatedQueue(SIZE)
         for (i in 0 until SIZE) {
             assertTrue(q.contains(i))
@@ -328,11 +261,8 @@ class PriorityQueueTests {
         }
     }
 
-    /**
-     * clear removes all elements
-     */
     @Test
-    fun testClear() {
+    fun `clear removes all elements`() {
         val q = populatedQueue(SIZE)
         q.clear()
         assertTrue(q.isEmpty())
@@ -343,11 +273,8 @@ class PriorityQueueTests {
         assertTrue(q.isEmpty())
     }
 
-    /**
-     * containsAll(c) is true when c contains a subset of elements
-     */
     @Test
-    fun testContainsAll() {
+    fun `containsAll is true only for a subset of the elements`() {
         val q = populatedQueue(SIZE)
         val p = PriorityQueue<Int>(SIZE)
         for (i in 0 until SIZE) {
@@ -358,11 +285,8 @@ class PriorityQueueTests {
         assertTrue(p.containsAll(q))
     }
 
-    /**
-     * retainAll(c) retains only those elements of c and reports true if changed
-     */
     @Test
-    fun testRetainAll() {
+    fun `retainAll keeps only the given elements and reports whether the queue changed`() {
         val q = populatedQueue(SIZE)
         val p = populatedQueue(SIZE)
         for (i in 0 until SIZE) {
@@ -378,11 +302,8 @@ class PriorityQueueTests {
         }
     }
 
-    /**
-     * removeAll(c) removes only those elements of c and reports true if changed
-     */
     @Test
-    fun testRemoveAll() {
+    fun `removeAll removes only the given elements and reports whether the queue changed`() {
         for (i in 1 until SIZE) {
             val q = populatedQueue(SIZE)
             val p = populatedQueue(i)
@@ -394,11 +315,8 @@ class PriorityQueueTests {
         }
     }
 
-    /**
-     * toArray contains all elements
-     */
     @Test
-    fun testToArray() {
+    fun `toTypedArray contains all elements`() {
         val q = populatedQueue(SIZE)
         val o = q.toTypedArray()
         o.sort()
@@ -406,23 +324,8 @@ class PriorityQueueTests {
             assertEquals(o[i], q.poll())
     }
 
-    /**
-     * toArray(a) contains all elements
-     */
     @Test
-    fun testToArray2() {
-        val q = populatedQueue(SIZE)
-        val ints = q.toTypedArray()
-        ints.sort()
-        for (i in ints.indices)
-            assertEquals(ints[i], q.poll())
-    }
-
-    /**
-     * iterator iterates through all elements
-     */
-    @Test
-    fun testIterator() {
+    fun `iterator visits every element`() {
         val q = populatedQueue(SIZE)
         var i = 0
         val it = q.iterator()
@@ -433,11 +336,8 @@ class PriorityQueueTests {
         assertEquals(SIZE, i)
     }
 
-    /**
-     * iterator.remove removes current element
-     */
     @Test
-    fun testIteratorRemove() {
+    fun `iterator remove deletes the current element`() {
         val q = PriorityQueue<Int>(3)
         q.add(1)
         q.add(2)
@@ -453,12 +353,8 @@ class PriorityQueueTests {
         assertFalse(it.hasNext())
     }
 
-
-    /**
-     * toString contains toStrings of elements
-     */
     @Test
-    fun testToString() {
+    fun `toString contains every element`() {
         val q = populatedQueue(SIZE)
         val s = q.toString()
         for (i in 0 until SIZE) {
@@ -466,11 +362,8 @@ class PriorityQueueTests {
         }
     }
 
-    /**
-     * A deserialized serialized queue has same elements
-     */
     @Test
-    fun testSerialization() {
+    fun `deserialized queue has the same elements in the same order`() {
         val q = populatedQueue(SIZE)
         val r = serializedCopy(q)
         assertEquals(q.size, r.size)
@@ -479,12 +372,8 @@ class PriorityQueueTests {
         }
     }
 
-    /**
-     * A deserialized serialized empty queue is empty and usable,
-     * whether it was never filled or has been drained
-     */
     @Test
-    fun testSerializationEmpty() {
+    fun `deserialized empty queue is empty and usable whether it was never filled or drained`() {
         val drained = populatedQueue(SIZE)
         repeat(SIZE) { drained.poll() }
         for (q in listOf(PriorityQueue(), drained)) {

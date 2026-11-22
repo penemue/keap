@@ -25,29 +25,29 @@ import java.util.*
 class PriorityQueueAuxTests {
 
     @Test
-    fun keapifyRandom() {
+    fun `keapify of random input takes n - 1 comparisons`() {
         testKeapify(randomStringListOfSize(100000))
     }
 
     @Test
-    fun keapifyOrderedAsc() {
+    fun `keapify of ascending input takes n - 1 comparisons`() {
         testKeapify(randomStringListOfSize(100000).keapSort().asList())
     }
 
     @Test
-    fun keapifyOrderedDesc() {
+    fun `keapify of descending input takes n - 1 comparisons`() {
         testKeapify(randomStringListOfSize(100000).keapSort().asList().asReversed())
     }
 
     @Test
-    fun keapifyEmpty() {
+    fun `keapify of an empty iterable gives an empty queue of minimum capacity`() {
         assertTrue(emptyList<String>().keapify().isEmpty())
         assertTrue(emptySequence<String>().asIterable().keapify().isEmpty())
         assertEquals(MIN_CAPACITY, emptyList<String>().keapify().capacity)
     }
 
     @Test
-    fun minCapacity() {
+    fun `capacity is never less than the minimum`() {
         assertEquals(MIN_CAPACITY, PriorityQueue<Int>().capacity)
         repeat(MIN_CAPACITY - 1) {
             assertEquals(MIN_CAPACITY, PriorityQueue<Int>(it + 1).capacity)
@@ -55,7 +55,7 @@ class PriorityQueueAuxTests {
     }
 
     @Test
-    fun stability() {
+    fun `queue filled by offer keeps equal elements in insertion order`() {
         val q = PriorityQueue<StableComparable>()
         val rnd = Random()
         repeat(100000) { q.offer(StableComparable(rnd.nextInt(100))) }
@@ -63,7 +63,7 @@ class PriorityQueueAuxTests {
     }
 
     @Test
-    fun stabilityOfKeapified() {
+    fun `keapified queue keeps equal elements in insertion order`() {
         val rnd = Random()
         val rndList = ArrayList<StableComparable>()
         repeat(100000) { rndList.add(StableComparable(rnd.nextInt(100))) }
@@ -71,7 +71,7 @@ class PriorityQueueAuxTests {
     }
 
     @Test
-    fun randomLoad() {
+    fun `random mix of offers and polls completes for PriorityQueue and java#util#PriorityQueue`() {
         val randomStrings = RandomStrings.randomStringListOfSize(1000000)
 
         val jupqCmp = CountingComparator<String>(Comparator(String::compareTo))
