@@ -16,13 +16,15 @@
 package com.github.penemue.keap
 
 /**
- * Iterates over the elements of the specified [collection][c]. Returned elements are sorted according to their
- * [natural ordering][Comparable] or by the specified [comparator][cmp].
+ * Iterates over the elements of the specified [collection][c]. Returned elements are sorted by the specified
+ * [comparator][cmp]. If it's `null`, they are sorted in the order of [c] if it's a [PriorityQueue], or according
+ * to their [natural ordering][Comparable] otherwise.
  */
 open class SortedIterable<out T>(private val c: Iterable<T>, private val cmp: Comparator<in T>? = null) : Iterable<T> {
 
     override fun iterator(): Iterator<T> {
-        val keap = (c as? PriorityQueue)?.copyOf() ?: c.keapify(cmp)
+        val keap = (c as? PriorityQueue)?.takeIf { cmp == null || cmp == it.comparator() }?.copyOf()
+            ?: c.keapify(cmp)
         return object : Iterator<T> {
 
             override fun next(): T {

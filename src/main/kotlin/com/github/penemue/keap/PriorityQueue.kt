@@ -105,12 +105,14 @@ open class PriorityQueue<T>(
     /**
      * Creates a `PriorityQueue` containing the elements of the specified collection, ordered according
      * to the specified comparator. If the comparator is not set (i.e., it's `null`), the priority queue
-     * will be ordered according to the [natural ordering][java.lang.Comparable] of its elements.
+     * will be ordered in the same way as [c] if it's a `PriorityQueue`, or according to the
+     * [natural ordering][java.lang.Comparable] of its elements otherwise.
      *
      * @param  c the collection whose elements are to be placed into this priority queue
      * @param  cmp the comparator that will be used to order this priority queue
      */
-    constructor(c: Collection<T>, cmp: Comparator<in T>? = null) : this(max(c.size, 1), cmp) {
+    constructor(c: Collection<T>, cmp: Comparator<in T>? = null) :
+        this(max(c.size, 1), comparatorFor(c, cmp)) {
         count = c.size
         c.forEach { queue[nextFree++] = it ?: throw NullPointerException() }
         heapify()
@@ -422,6 +424,9 @@ open class PriorityQueue<T>(
 
         private const val NIL = -1
         const val MIN_CAPACITY = 4
+
+        private fun <T> comparatorFor(c: Collection<T>, cmp: Comparator<in T>?): Comparator<in T>? =
+            cmp ?: (c as? PriorityQueue<T>)?.cmp
 
         private val Int.toCapacity: Int
             get() {

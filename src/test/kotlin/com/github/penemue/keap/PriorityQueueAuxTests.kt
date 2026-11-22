@@ -62,6 +62,34 @@ class PriorityQueueAuxTests {
     }
 
     @Test
+    fun `queue created from a priority queue passed as a collection inherits its comparator`() {
+        val source: Collection<Int> = PriorityQueue(listOf(1, 2, 3), reverseOrder())
+        val keap = PriorityQueue(source)
+        assertEquals(reverseOrder<Int>(), keap.comparator())
+        assertEquals(listOf(3, 2, 1), generateSequence { keap.poll() }.toList())
+    }
+
+    @Test
+    fun `queue created from a priority queue passed as a collection uses the specified comparator`() {
+        val source: Collection<Int> = PriorityQueue(listOf(1, 2, 3), reverseOrder())
+        val keap = PriorityQueue(source, naturalOrder())
+        assertEquals(listOf(1, 2, 3), generateSequence { keap.poll() }.toList())
+    }
+
+    @Test
+    fun `keapSorted of a priority queue uses the specified comparator`() {
+        val source = PriorityQueue(listOf(3, 1, 2))
+        assertEquals(listOf(3, 2, 1), source.keapSorted(reverseOrder()).toList())
+        assertEquals(listOf(1, 2, 3), source.keapSorted().toList())
+    }
+
+    @Test
+    fun `keapSorted of a priority queue without a comparator keeps the order of the queue`() {
+        val source = PriorityQueue(listOf(1, 2, 3), reverseOrder())
+        assertEquals(listOf(3, 2, 1), source.keapSorted().toList())
+    }
+
+    @Test
     fun `capacity is never less than the minimum`() {
         assertEquals(MIN_CAPACITY, PriorityQueue<Int>().capacity)
         repeat(MIN_CAPACITY - 1) {
