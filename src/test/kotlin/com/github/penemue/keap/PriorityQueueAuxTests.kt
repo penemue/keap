@@ -47,6 +47,21 @@ class PriorityQueueAuxTests {
     }
 
     @Test
+    fun `keapify of a non-collection iterable uses the specified comparator`() {
+        val keap = (1..6).keapify(reverseOrder())
+        assertEquals(listOf(6, 5, 4, 3, 2, 1), generateSequence { keap.poll() }.toList())
+        assertEquals(listOf(6, 5, 4, 3, 2, 1), (1..6).keapSorted(reverseOrder()).toList())
+    }
+
+    @Test
+    fun `keapify of a non-collection iterable accepts non-comparable elements with a comparator`() {
+        class Item(val key: Int)
+
+        val keap = sequenceOf(3, 1, 2).map { Item(it) }.asIterable().keapify(compareBy { it.key })
+        assertEquals(listOf(1, 2, 3), generateSequence { keap.poll() }.map { it.key }.toList())
+    }
+
+    @Test
     fun `capacity is never less than the minimum`() {
         assertEquals(MIN_CAPACITY, PriorityQueue<Int>().capacity)
         repeat(MIN_CAPACITY - 1) {

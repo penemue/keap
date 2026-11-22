@@ -28,7 +28,7 @@ fun <T> Iterable<T>.keapify(cmp: Comparator<in T>? = null): PriorityQueue<T> {
     if (this is Collection) {
         return PriorityQueue(this, cmp)
     }
-    val result = PriorityQueue<T>()
+    val result = PriorityQueue<T>(cmp = cmp)
     forEach { result.offer(it) }
     return result
 }
