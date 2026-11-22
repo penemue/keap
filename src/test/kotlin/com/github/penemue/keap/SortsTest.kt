@@ -18,6 +18,7 @@ package com.github.penemue.keap
 import com.github.penemue.keap.RandomStrings.randomStringListOfSize
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -42,6 +43,14 @@ class SortsTest {
         assertEquals(0, arrayOf<String>().keapSort().size)
         assertEquals(0, emptyList<String>().keapSort(Comparator.reverseOrder()).size)
         assertFalse(emptyList<String>().keapSorted().iterator().hasNext())
+    }
+
+    @Test
+    fun `exhausted keapSorted iterator throws NoSuchElementException`() {
+        val iterator = listOf(2, 1).keapSorted().iterator()
+        assertEquals(listOf(1, 2), listOf(iterator.next(), iterator.next()))
+        assertFalse(iterator.hasNext())
+        assertThrows(NoSuchElementException::class.java) { iterator.next() }
     }
 
     @Test

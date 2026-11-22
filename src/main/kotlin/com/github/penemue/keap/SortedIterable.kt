@@ -28,7 +28,7 @@ open class SortedIterable<out T>(private val c: Iterable<T>, private val cmp: Co
         return object : Iterator<T> {
 
             override fun next(): T {
-                return keap.pollRaw() ?: throw NullPointerException()
+                return keap.pollRaw() ?: throw NoSuchElementException()
             }
 
             override fun hasNext(): Boolean {
