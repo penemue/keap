@@ -63,6 +63,9 @@ fun <T> PriorityQueue<T>.copyOf() = PriorityQueue(this)
  * guaranteed to traverse the elements of the priority queue in any order. If you need ordered
  * traversal, consider using [SortedIterable].
  *
+ * If the comparator throws an exception, the operation that invoked it leaves the elements of the priority queue
+ * unchanged.
+ *
  * The priority queue is not synchronized.
  *
  * @author Vyacheslav Lukianov (https://github.com/penemue)
@@ -93,6 +96,10 @@ open class PriorityQueue<T>(
 
     @Transient
     private var heapSize = heap.size
+
+    // set while the heap does not match the queue because rebuilding it has failed or has not finished
+    @Transient
+    private var heapStale = false
 
     /**
      * Creates a `PriorityQueue` with the default initial [capacity][MIN_CAPACITY] and whose elements
@@ -129,6 +136,7 @@ open class PriorityQueue<T>(
         nextFree = c.nextFree
         queue copyFrom c.queue
         heap copyFrom c.heap
+        heapStale = c.heapStale
     }
 
     /**
@@ -140,17 +148,27 @@ open class PriorityQueue<T>(
      */
     fun comparator() = cmp
 
-    override fun peek(): T? = if (isEmpty()) null else queue[heap[0]]
+    override fun peek(): T? {
+        if (isEmpty()) return null
+        ensureHeap()
+        return queue[heap[0]]
+    }
 
     override fun poll(): T? {
-        return pollRaw()?.apply { compactIfNecessary() }
+        if (isEmpty()) return null
+        compactIfNecessary()
+        return pollRaw()
     }
 
     /**
      * Retrieves and removes the least element, if any, without [compaction][compactIfNecessary] of this queue.
      * Used in [keapSort] to avoid unnecessary comparisons during compaction.
      */
-    fun pollRaw(): T? = if (isEmpty()) null else removeAtEven(heap[0])
+    fun pollRaw(): T? {
+        if (isEmpty()) return null
+        ensureHeap()
+        return removeAtEven(heap[0])
+    }
 
     /**
      * Inserts the specified element into this priority queue.
@@ -162,6 +180,7 @@ open class PriorityQueue<T>(
      */
     override fun offer(e: T?): Boolean {
         e ?: throw NullPointerException()
+        ensureHeap()
         val i = nextFree
         if (i.isOdd) {
             val neighbour = queue[i - 1] ?: throw NullPointerException()
@@ -170,7 +189,10 @@ open class PriorityQueue<T>(
             } else {
                 queue[i - 1] = e
                 queue[i] = neighbour
-                siftUp(i - 1)
+                siftUp(i - 1) {
+                    queue[i - 1] = neighbour
+                    queue[i] = null
+                }
             }
         } else if (i == queue.size) {
             val q = queue
@@ -187,11 +209,11 @@ open class PriorityQueue<T>(
                 q.fill(null, j, i)
             }
             nextFree = j
-            heapify()
+            rebuildHeap()
             return offer(e)
         } else {
             queue[i] = e
-            siftUp(i)
+            siftUp(i) { queue[i] = null }
         }
         nextFree = i + 1
         ++count
@@ -307,28 +329,57 @@ open class PriorityQueue<T>(
         }
     }
 
-    private fun siftUp(index: Int) {
-        var i = queueParent(index)
-        heap[i] = min(queueLeftChild(i), queueRightChild(i))
-        while (i > 0) {
-            i = i.parent
-            val min = min(heap[i.leftChild], heap[i.rightChild])
-            if (min == heap[i]) {
-                if (min == index) continue
-                break
-            }
-            heap[i] = min
+    private fun ensureHeap() {
+        if (heapStale) rebuildHeap()
+    }
+
+    // if a comparison fails, the heap stays stale, and the next operation that needs it rebuilds it again
+    private fun rebuildHeap() {
+        heapStale = true
+        ++modCount
+        heapify()
+        heapStale = false
+    }
+
+    // sifts up the element at index, and undoes the change of the queue if a comparison fails
+    private inline fun siftUp(index: Int, undo: () -> Unit) {
+        try {
+            siftUp(index)
+        } catch (t: Throwable) {
+            undo()
+            throw t
         }
     }
 
+    // if a comparison fails, the heap stays unchanged
+    private fun siftUp(index: Int) {
+        val i = queueParent(index)
+        updateHeapPath(i, min(queueLeftChild(i), queueRightChild(i)), index)
+    }
+
+    // writes newMin to heap[i] only after all comparisons on the path to the root have succeeded
+    private fun updateHeapPath(i: Int, newMin: Int, index: Int) {
+        if (i > 0) {
+            val parent = i.parent
+            val parentMin =
+                if (i == parent.leftChild) min(newMin, heap[parent.rightChild]) else min(heap[parent.leftChild], newMin)
+            if (parentMin != heap[parent] || parentMin == index) {
+                updateHeapPath(parent, parentMin, index)
+            }
+        }
+        heap[i] = newMin
+    }
+
+    // compaction precedes the removal of an element, so that a failed comparison does not lose the element
     private fun compactIfNecessary() {
-        if (count > 0 && count < queue.size / 3) {
+        val newCount = count - 1
+        if (newCount > 0 && newCount < queue.size / 3) {
             val oldQueue = queue
             allocHeap(count)
             var j = 0
             repeat(nextFree) { oldQueue[it]?.apply { queue[j++] = this } }
             nextFree = j
-            heapify()
+            rebuildHeap()
         }
     }
 
@@ -346,18 +397,24 @@ open class PriorityQueue<T>(
 
     // remove element at even index
     private fun removeAtEven(i: Int): T? {
-        return queue[i]?.apply {
-            queue[i] = queue[i + 1]
-            queue[i + 1] = null
-            siftUp(i)
-            if (i == nextFree - 1) {
-                var j = i
-                while (j > 0 && queue[j - 1] == null) --j
-                nextFree = j
+        val removed = queue[i] ?: return null
+        val neighbour = queue[i + 1]
+        queue[i] = neighbour
+        queue[i + 1] = null
+        if (!heapStale) {
+            siftUp(i) {
+                queue[i] = removed
+                queue[i + 1] = neighbour
             }
-            --count
-            ++modCount
         }
+        if (i == nextFree - 1) {
+            var j = i
+            while (j > 0 && queue[j - 1] == null) --j
+            nextFree = j
+        }
+        --count
+        ++modCount
+        return removed
     }
 
     // even index is expected
