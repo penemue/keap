@@ -100,10 +100,8 @@ val javadocJar by tasks.registering(Jar::class) {
     from(dokkaGenerateJavadocTask)
 }
 
-artifacts {
-    add("archives", tasks.jar)
-    add("archives", javadocJar)
-    add("archives", sourceJar)
+tasks.assemble {
+    dependsOn(sourceJar, javadocJar)
 }
 
 if (!isSnapshot && signingKeyId.isNotEmpty()) {
