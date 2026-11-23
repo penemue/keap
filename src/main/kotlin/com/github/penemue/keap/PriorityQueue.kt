@@ -40,7 +40,7 @@ fun <T> PriorityQueue<T>.copyOf() = PriorityQueue(this)
 
 /**
  * A priority [queue][java.util.Queue] based on keap, a heap data structure similar to a binary heap.
- * It separately maintains the [queue] of elements and the [tournament tree][heap] atop the queue.
+ * It separately maintains the queue of elements and the tournament tree atop the queue.
  * The elements of the priority queue are ordered according to their [natural ordering][java.lang.Comparable],
  * or by a [Comparator] provided at queue construction time, depending on which constructor is
  * used. A priority queue does not permit `null` elements. A priority queue relying on natural ordering also
@@ -51,12 +51,12 @@ fun <T> PriorityQueue<T>.copyOf() = PriorityQueue(this)
  *
  * Better performance means that the priority queue almost always performs fewer comparisons of its elements.
  * For random input, compared to `java.util.PriorityQueue`, the priority queue performs approximately 90%
- * fewer comparisons to [heapify], 20% more comparisons to [offer], and more than 3 times fewer
+ * fewer comparisons to [heapify][keapify], 20% more comparisons to [offer], and more than 3 times fewer
  * comparisons to [poll]. However, it requires 2-3 times more memory than `java.util.PriorityQueue`.
  *
  * Stability means that the priority queue preserves the initial order of equal elements added to the queue.
  * This feature enables [Keapsort][keapSorted], a sorting algorithm similar to
- * [Heapsort][https://en.wikipedia.org/wiki/Heapsort], but stable and faster in terms of the number of comparisons.
+ * [Heapsort](https://en.wikipedia.org/wiki/Heapsort), but stable and faster in terms of the number of comparisons.
  *
  * This class and its iterator implement all of the *optional* methods of the [java.util.Collection] and
  * [java.util.Iterator] interfaces. The iterator provided by [iterator] is *not*
@@ -102,7 +102,7 @@ open class PriorityQueue<T>(
     private var heapStale = false
 
     /**
-     * Creates a `PriorityQueue` with the default initial [capacity][MIN_CAPACITY] and whose elements
+     * Creates a `PriorityQueue` with the default initial capacity and whose elements
      * are ordered according to the specified comparator.
      *
      * @param  cmp the comparator that will be used to order this priority queue
@@ -165,7 +165,7 @@ open class PriorityQueue<T>(
     }
 
     /**
-     * Retrieves and removes the least element, if any, without [compaction][compactIfNecessary] of this queue.
+     * Retrieves and removes the least element, if any, without compaction of this queue.
      * Used in [keapSort] to avoid unnecessary comparisons during compaction.
      */
     fun pollRaw(): T? {

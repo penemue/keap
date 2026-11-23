@@ -37,7 +37,7 @@ inline fun <reified T> Collection<T>.keapSort(cmp: Comparator<in T>? = null): Ar
 }
 
 /**
- * For an [array][Collection], returns [array][Iterable] of elements sorted according to their
+ * For an [array][Array], returns [array][Array] of elements sorted according to their
  * [natural ordering][Comparable] or by the specified [comparator][cmp].
  */
 inline fun <reified T> Array<T>.keapSort(cmp: Comparator<in T>? = null): Array<T> {

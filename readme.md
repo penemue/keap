@@ -188,8 +188,9 @@ dependencies {
 ```
 
 ## Building from Source
-[Gradle](http://www.gradle.org) is used to build, test, and run benchmarks. JDK 1.8+ is required to run the produced
-artifact; the project itself is built with [Kotlin](http://kotlinlang.org) 2.3.21. To build the project, run:
+[Gradle](https://gradle.org) is used to build, test, and run benchmarks. The library requires JDK 8+ and can be used
+from [Kotlin](https://kotlinlang.org) 2.1+. The project itself is built with Kotlin 2.4.0; running Gradle requires
+JDK 17+, and JDK 8 for the tests is downloaded automatically. To build the project, run:
 
 
     ./gradlew
