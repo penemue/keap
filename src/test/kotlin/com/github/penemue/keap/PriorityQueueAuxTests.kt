@@ -15,10 +15,14 @@
  */
 package com.github.penemue.keap
 
+import com.github.penemue.keap.PriorityQueue.Companion.MAX_CAPACITY
 import com.github.penemue.keap.PriorityQueue.Companion.MIN_CAPACITY
+import com.github.penemue.keap.PriorityQueue.Companion.grownCapacity
+import com.github.penemue.keap.PriorityQueue.Companion.toCapacity
 import com.github.penemue.keap.RandomStrings.randomStringListOfSize
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.*
@@ -114,6 +118,24 @@ class PriorityQueueAuxTests {
         repeat(MIN_CAPACITY - 1) {
             assertEquals(MIN_CAPACITY, PriorityQueue<Int>(it + 1).capacity)
         }
+    }
+
+    @Test
+    fun `capacity is rounded up to a power of two not exceeding the maximum`() {
+        assertEquals(1 shl 29, (1 shl 29).toCapacity)
+        assertEquals(MAX_CAPACITY, ((1 shl 29) + 1).toCapacity)
+        assertEquals(MAX_CAPACITY, MAX_CAPACITY.toCapacity)
+        assertThrows(OutOfMemoryError::class.java) { (MAX_CAPACITY + 1).toCapacity }
+        assertThrows(OutOfMemoryError::class.java) { PriorityQueue<Int>(Int.MAX_VALUE) }
+    }
+
+    @Test
+    fun `grown capacity leaves free space and does not exceed the maximum`() {
+        assertEquals(MIN_CAPACITY, 0.grownCapacity)
+        assertEquals(8, 3.grownCapacity)
+        assertEquals(MAX_CAPACITY, (1 shl 29).grownCapacity)
+        assertEquals(MAX_CAPACITY, (MAX_CAPACITY - 1).grownCapacity)
+        assertThrows(OutOfMemoryError::class.java) { MAX_CAPACITY.grownCapacity }
     }
 
     @Test

@@ -202,7 +202,7 @@ open class PriorityQueue<T>(
         } else if (i == queue.size) {
             val q = queue
             // do not allocate a new array for the queue if there is enough free space (at least ~25%)
-            val newCapacity = max(i, ((count + 1) * 4 / 3).toCapacity)
+            val newCapacity = max(i, count.grownCapacity)
             if (newCapacity > i) {
                 allocHeap(newCapacity)
             }
@@ -511,15 +511,26 @@ open class PriorityQueue<T>(
 
         private const val NIL = -1
         const val MIN_CAPACITY = 4
+        const val MAX_CAPACITY = 1 shl 30
 
         private fun <T> comparatorFor(c: Collection<T>, cmp: Comparator<in T>?): Comparator<in T>? =
             cmp ?: (c as? PriorityQueue<T>)?.cmp
 
-        private val Int.toCapacity: Int
+        internal val Int.toCapacity: Int
             get() {
                 require(this >= 1)
+                if (this > MAX_CAPACITY) throw OutOfMemoryError("PriorityQueue capacity cannot exceed $MAX_CAPACITY")
                 // capacity is always a power of 2
                 return (2 * this - 1).takeHighestOneBit().coerceAtLeast(MIN_CAPACITY)
+            }
+
+        // the capacity for this count of elements plus one more, with at least ~25% of free space unless
+        // the maximum capacity does not allow it
+        internal val Int.grownCapacity: Int
+            get() {
+                val newCount = this + 1
+                val withFreeSpace = newCount + newCount / 3
+                return (if (withFreeSpace > MAX_CAPACITY) newCount else withFreeSpace).toCapacity
             }
 
         private val Int.leftChild: Int get() = this * 2 + 1
