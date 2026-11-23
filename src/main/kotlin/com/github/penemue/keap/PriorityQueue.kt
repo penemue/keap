@@ -121,7 +121,11 @@ open class PriorityQueue<T>(
     constructor(c: Collection<T>, cmp: Comparator<in T>? = null) :
         this(max(c.size, 1), comparatorFor(c, cmp)) {
         count = c.size
-        c.forEach { queue[nextFree++] = it ?: throw NullPointerException() }
+        c.forEach {
+            it ?: throw NullPointerException()
+            verifyComparable(it)
+            queue[nextFree++] = it
+        }
         heapify()
     }
 
@@ -180,6 +184,7 @@ open class PriorityQueue<T>(
      */
     override fun offer(e: T?): Boolean {
         e ?: throw NullPointerException()
+        verifyComparable(e)
         ensureHeap()
         val i = nextFree
         if (i.isOdd) {
@@ -466,6 +471,13 @@ open class PriorityQueue<T>(
     @Suppress("UNCHECKED_CAST")
     private fun compare(value1: T, value2: T) =
         cmp?.compare(value1, value2) ?: (value1 as Comparable<T>).compareTo(value2)
+
+    // a lone element is never compared, so compare() alone would not reject it
+    private fun verifyComparable(e: Any) {
+        if (cmp == null && e !is Comparable<*>) {
+            throw ClassCastException("${e.javaClass.name} cannot be cast to ${Comparable::class.java.name}")
+        }
+    }
 
     @Suppress("unused") // called via reflection by Java serialization
     private fun writeObject(output: ObjectOutputStream) {

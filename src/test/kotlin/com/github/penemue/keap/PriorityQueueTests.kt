@@ -148,6 +148,26 @@ class PriorityQueueTests {
     }
 
     @Test
+    fun `offer of a non-comparable element to an empty queue throws ClassCastException and keeps it empty`() {
+        val q = PriorityQueue<Any>()
+        assertThrows(ClassCastException::class.java) { q.offer(Any()) }
+        assertTrue(q.isEmpty())
+    }
+
+    @Test(expected = ClassCastException::class)
+    fun `creating from a collection of one non-comparable element throws ClassCastException`() {
+        PriorityQueue(listOf(Any()))
+    }
+
+    @Test
+    fun `queue with a comparator accepts a non-comparable element`() {
+        val q = PriorityQueue<Any>(compareBy { it.hashCode() })
+        val element = Any()
+        assertTrue(q.offer(element))
+        assertSame(element, q.poll())
+    }
+
+    @Test
     fun `add of a comparable element succeeds`() {
         val q = PriorityQueue<Int>(SIZE)
         for (i in 0 until SIZE) {
