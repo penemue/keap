@@ -20,7 +20,8 @@ package com.github.penemue.keap
  * [natural ordering][Comparable] or by the specified [comparator][cmp].
  * If `size` is the size of this, then the first (the least) item is returned after `size - 1` comparisons.
  */
-inline fun <reified T> Iterable<T>.keapSorted(cmp: Comparator<in T>? = null): Iterable<T> {
+@JvmOverloads
+fun <T> Iterable<T>.keapSorted(cmp: Comparator<in T>? = null): Iterable<T> {
     return SortedIterable(this, cmp)
 }
 

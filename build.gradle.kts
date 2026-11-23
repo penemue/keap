@@ -58,6 +58,11 @@ license {
     mapping("kt", "JAVADOC_STYLE")
 }
 
+tasks.compileTestJava {
+    // newer JDKs warn that the Java 8 source and target are obsolete
+    options.compilerArgs.add("-Xlint:-options")
+}
+
 tasks.test {
     testLogging.showStandardStreams = true
 }
