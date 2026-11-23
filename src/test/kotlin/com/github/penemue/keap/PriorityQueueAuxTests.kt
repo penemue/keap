@@ -25,6 +25,8 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.io.ByteArrayOutputStream
+import java.io.ObjectOutputStream
 import java.util.*
 
 class PriorityQueueAuxTests {
@@ -110,6 +112,20 @@ class PriorityQueueAuxTests {
 
         listOf(3, 1, 2).forEach { keap.offer(it) }
         assertEquals(listOf(1, 2, 3), generateSequence { keap.poll() }.toList())
+    }
+
+    @Test
+    fun `queue operations do not call methods that a subclass can override`() {
+        val keap = InstrumentedQueue()
+        repeat(100) { keap.offer(100 - it) }
+        keap.peek()
+        keap.poll()
+        keap.pollRaw()
+        ObjectOutputStream(ByteArrayOutputStream()).use { it.writeObject(keap) }
+
+        assertEquals(100, keap.offers)
+        assertEquals(0, keap.emptinessChecks)
+        assertEquals(0, keap.iterations)
     }
 
     @Test
@@ -215,5 +231,27 @@ class PriorityQueueAuxTests {
                 repeat((i % 10) + 1) { q.poll() }
             }
         }
+    }
+}
+
+private class InstrumentedQueue : PriorityQueue<Int>() {
+
+    var offers = 0
+    var emptinessChecks = 0
+    var iterations = 0
+
+    override fun offer(e: Int?): Boolean {
+        ++offers
+        return super.offer(e)
+    }
+
+    override fun isEmpty(): Boolean {
+        ++emptinessChecks
+        return super.isEmpty()
+    }
+
+    override fun iterator(): MutableIterator<Int> {
+        ++iterations
+        return super.iterator()
     }
 }

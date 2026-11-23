@@ -153,13 +153,13 @@ open class PriorityQueue<T>(
     fun comparator() = cmp
 
     override fun peek(): T? {
-        if (isEmpty()) return null
+        if (count == 0) return null
         ensureHeap()
         return queue[heap[0]]
     }
 
     override fun poll(): T? {
-        if (isEmpty()) return null
+        if (count == 0) return null
         compactIfNecessary()
         return pollRaw()
     }
@@ -169,7 +169,7 @@ open class PriorityQueue<T>(
      * Used in [keapSort] to avoid unnecessary comparisons during compaction.
      */
     fun pollRaw(): T? {
-        if (isEmpty()) return null
+        if (count == 0) return null
         ensureHeap()
         return removeAtEven(heap[0])
     }
@@ -186,6 +186,7 @@ open class PriorityQueue<T>(
         e ?: throw NullPointerException()
         verifyComparable(e)
         ensureHeap()
+        if (nextFree == queue.size) makeRoom()
         val i = nextFree
         if (i.isOdd) {
             val neighbour = queue[i - 1] ?: throw NullPointerException()
@@ -199,23 +200,6 @@ open class PriorityQueue<T>(
                     queue[i] = null
                 }
             }
-        } else if (i == queue.size) {
-            val q = queue
-            // do not allocate a new array for the queue if there is enough free space (at least ~25%)
-            val newCapacity = max(i, count.grownCapacity)
-            if (newCapacity > i) {
-                allocHeap(newCapacity)
-            }
-            var j = 0
-            if (q !== queue) {
-                q.forEach { it?.apply { queue[j++] = this } }
-            } else {
-                q.forEach { it?.apply { q[j++] = this } }
-                q.fill(null, j, i)
-            }
-            nextFree = j
-            rebuildHeap()
-            return offer(e)
         } else {
             queue[i] = e
             siftUp(i) { queue[i] = null }
@@ -224,6 +208,26 @@ open class PriorityQueue<T>(
         ++count
         ++modCount
         return true
+    }
+
+    // compacts the queue, or moves it to a larger array, so that it has a free slot at nextFree
+    private fun makeRoom() {
+        val q = queue
+        val oldCapacity = q.size
+        // do not allocate a new array for the queue if there is enough free space (at least ~25%)
+        val newCapacity = max(oldCapacity, count.grownCapacity)
+        if (newCapacity > oldCapacity) {
+            allocHeap(newCapacity)
+        }
+        var j = 0
+        if (q !== queue) {
+            q.forEach { it?.apply { queue[j++] = this } }
+        } else {
+            q.forEach { it?.apply { q[j++] = this } }
+            q.fill(null, j, oldCapacity)
+        }
+        nextFree = j
+        rebuildHeap()
     }
 
     override val size: Int get() = count
@@ -484,7 +488,7 @@ open class PriorityQueue<T>(
         // write out element count
         output.defaultWriteObject()
         // write out all elements
-        forEach { output.writeObject(it) }
+        queue.forEach { it?.let(output::writeObject) }
     }
 
     @Suppress("unused") // called via reflection by Java serialization
