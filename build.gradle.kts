@@ -5,7 +5,7 @@ plugins {
     kotlin("jvm") version "2.4.0"
     id("org.jetbrains.dokka") version "2.1.0"
     id("org.jetbrains.dokka-javadoc") version "2.1.0"
-    id("com.github.hierynomus.license") version "0.16.1"
+    id("com.diffplug.spotless") version "8.12.0"
     id("me.champeau.jmh") version "0.7.2"
     `maven-publish`
     signing
@@ -45,16 +45,16 @@ kotlin {
     }
 }
 
-license {
-    header = rootProject.file("copyright.ftl")
-    strictCheck = true
-    ext["inceptionYear"] = 2016
-    ext["year"] = 2026
-    ext["owner"] = "Vyacheslav Lukianov"
-    ext["ownerURL"] = "https://github.com/penemue"
-    include("**/*.kt")
-    include("**/*.java")
-    mapping("kt", "JAVADOC_STYLE")
+spotless {
+    val licenseHeader = rootProject.file("license-header.txt")
+    kotlin {
+        target("src/**/*.kt")
+        licenseHeaderFile(licenseHeader)
+    }
+    java {
+        target("src/**/*.java")
+        licenseHeaderFile(licenseHeader)
+    }
 }
 
 tasks.compileTestJava {
