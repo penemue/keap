@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import java.util.Calendar
 
 plugins {
     kotlin("jvm") version "2.4.0"
@@ -50,7 +49,7 @@ license {
     header = rootProject.file("copyright.ftl")
     strictCheck = true
     ext["inceptionYear"] = 2016
-    ext["year"] = Calendar.getInstance().get(Calendar.YEAR)
+    ext["year"] = 2026
     ext["owner"] = "Vyacheslav Lukianov"
     ext["ownerURL"] = "https://github.com/penemue"
     include("**/*.kt")
