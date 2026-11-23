@@ -63,8 +63,23 @@ tasks.compileTestJava {
     options.compilerArgs.add("-Xlint:-options")
 }
 
-tasks.test {
+tasks.withType<Test>().configureEach {
     testLogging.showStandardStreams = true
+}
+
+val testOnJava8 by tasks.registering(Test::class) {
+    description = "Runs the tests on JDK 8."
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(8)
+        vendor = JvmVendorSpec.AZUL
+    }
+}
+
+tasks.check {
+    dependsOn(testOnJava8)
 }
 
 jmh {
