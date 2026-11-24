@@ -220,10 +220,8 @@ open class PriorityQueue<T>(
             allocHeap(newCapacity)
         }
         var j = 0
-        if (q !== queue) {
-            q.forEach { it?.apply { queue[j++] = this } }
-        } else {
-            q.forEach { it?.apply { q[j++] = this } }
+        q.forEach { it?.apply { queue[j++] = this } }
+        if (q === queue) {
             q.fill(null, j, oldCapacity)
         }
         nextFree = j
